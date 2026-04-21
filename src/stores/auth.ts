@@ -8,7 +8,7 @@ function extractRole(role: AuthRole | undefined): UserRole | null {
   return role.name as UserRole
 }
 
-const TOKEN_KEY = 'lodge_token'
+const TOKEN_KEY = 'ovc_token'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<AuthUser | null>(null)
@@ -21,9 +21,8 @@ export const useAuthStore = defineStore('auth', () => {
   const roleLabel = computed(() => {
     switch (userRole.value) {
       case 'admin': return 'Administrator'
-      case 'manager': return 'Manager'
-      case 'receptionist': return 'Receptionist'
-      case 'cleaner': return 'Cleaner'
+      case 'user': return 'Guidance Staff'
+      case 'inspector': return 'Inspector'
       default: return ''
     }
   })

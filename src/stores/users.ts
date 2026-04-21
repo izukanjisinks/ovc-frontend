@@ -46,13 +46,13 @@ export const useUsersStore = defineStore('users', () => {
   async function lockUser(id: string): Promise<void> {
     await usersApi.lock(id)
     const idx = users.value.findIndex(u => u.id === id)
-    if (idx !== -1) users.value[idx].is_locked = true
+    if (idx !== -1) users.value[idx]!.is_locked = true
   }
 
   async function unlockUser(id: string): Promise<void> {
     await usersApi.unlock(id)
     const idx = users.value.findIndex(u => u.id === id)
-    if (idx !== -1) users.value[idx].is_locked = false
+    if (idx !== -1) users.value[idx]!.is_locked = false
   }
 
   return { users, total, loading, error, fetchUsers, createUser, updateUser, deleteUser, lockUser, unlockUser }

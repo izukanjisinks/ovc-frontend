@@ -23,13 +23,12 @@ async function request<T>(
   }
 
   if (requiresAuth) {
-    const token = localStorage.getItem('lodge_token')
+    const token = localStorage.getItem('ovc_token')
     if (token) {
       headers['Authorization'] = `Bearer ${token}`
     }
   }
 
-  // Build URL with query params
   let url = `${BASE_URL}${path}`
   if (params) {
     const searchParams = new URLSearchParams()
@@ -52,15 +51,12 @@ async function request<T>(
   })
 
   if (!response.ok) {
-    // Handle 403 Forbidden errors
     if (response.status === 403) {
       const { showForbidden } = useForbiddenHandler()
-      // Extract resource name from path (e.g., /admin/workflows -> Workflows)
       const pathParts = path.split('/').filter(Boolean)
       const resourceName = pathParts[pathParts.length - 1]
         ?.replace(/-/g, ' ')
         .replace(/\b\w/g, (char) => char.toUpperCase())
-
       showForbidden(resourceName)
     }
 
@@ -70,7 +66,6 @@ async function request<T>(
     throw errorData
   }
 
-  // 204 No Content
   if (response.status === 204) {
     return undefined as T
   }

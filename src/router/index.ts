@@ -26,97 +26,64 @@ const router = createRouter({
       path: '/',
       component: () => import('@/layouts/AuthenticatedLayout.vue'),
       meta: { requiresAuth: true },
-      redirect: '/dashboard',
+      redirect: '/home',
       children: [
-        // Shared
         {
-          path: 'dashboard',
-          name: 'dashboard',
+          path: 'home',
+          name: 'home',
           component: () => import('@/views/dashboard/DashboardView.vue'),
         },
         {
-          path: 'profile',
-          name: 'profile',
-          component: () => import('@/views/profile/ProfileView.vue'),
-        },
-
-        // Cleaner dashboard
-        {
-          path: 'cleaner',
-          name: 'cleaner-dashboard',
-          component: () => import('@/views/cleaner/CleanerDashboardView.vue'),
-        },
-
-        // --- Admin / Staff routes ---
-        {
-          path: 'rooms',
-          name: 'rooms',
-          component: () => import('@/views/admin/rooms/RoomsView.vue'),
+          path: 'children',
+          name: 'children',
+          component: () => import('@/views/admin/children/ChildrenView.vue'),
+          meta: { roles: ['admin', 'user'] },
         },
         {
-          path: 'bookings',
-          name: 'admin-bookings',
-          component: () => import('@/views/admin/bookings/BookingsView.vue'),
+          path: 'children/new',
+          name: 'children-new',
+          component: () => import('@/views/admin/children/AddEditChildView.vue'),
+          meta: { roles: ['admin', 'user'] },
         },
         {
-          path: 'meals',
-          name: 'meals',
-          component: () => import('@/views/admin/meals/MealsView.vue'),
+          path: 'children/:id/edit',
+          name: 'children-edit',
+          component: () => import('@/views/admin/children/AddEditChildView.vue'),
+          meta: { roles: ['admin', 'user'] },
         },
         {
-          path: 'invoices',
-          name: 'admin-invoices',
-          component: () => import('@/views/admin/invoices/InvoicesView.vue'),
-        },
-        {
-          path: 'clients/individual',
-          name: 'clients-individual',
-          component: () => import('@/views/admin/clients/IndividualClientsView.vue'),
-        },
-        {
-          path: 'clients/corporate',
-          name: 'clients-corporate',
-          component: () => import('@/views/admin/clients/CorporateClientsView.vue'),
+          path: 'children/:id',
+          name: 'children-detail',
+          component: () => import('@/views/admin/children/ChildDetailView.vue'),
         },
         {
           path: 'reports',
           name: 'reports',
           component: () => import('@/views/admin/reports/ReportsView.vue'),
+          meta: { roles: ['admin', 'user'] },
+        },
+        {
+          path: 'reports/new',
+          name: 'reports-new',
+          component: () => import('@/views/admin/reports/AddEditReportView.vue'),
+          meta: { roles: ['admin', 'user'] },
+        },
+        {
+          path: 'reports/:id/edit',
+          name: 'reports-edit',
+          component: () => import('@/views/admin/reports/AddEditReportView.vue'),
+          meta: { roles: ['admin', 'user'] },
         },
         {
           path: 'users',
           name: 'users',
           component: () => import('@/views/admin/users/UsersView.vue'),
+          meta: { roles: ['admin'] },
         },
         {
-          path: 'workflow',
-          name: 'workflow',
-          component: () => import('@/views/admin/workflow/WorkflowView.vue'),
-        },
-        {
-          path: 'workflow/tasks',
-          name: 'workflow-tasks',
-          component: () => import('@/views/admin/workflow/TasksView.vue'),
-        },
-
-        // --- Client routes ---
-        {
-          path: 'book',
-          name: 'book',
-          component: () => import('@/views/client/bookings/NewBookingView.vue'),
-          meta: { roles: ['client_individual', 'client_corporate'] },
-        },
-        {
-          path: 'my-bookings',
-          name: 'my-bookings',
-          component: () => import('@/views/client/bookings/MyBookingsView.vue'),
-          meta: { roles: ['client_individual', 'client_corporate'] },
-        },
-        {
-          path: 'my-invoices',
-          name: 'my-invoices',
-          component: () => import('@/views/client/invoices/MyInvoicesView.vue'),
-          meta: { roles: ['client_individual', 'client_corporate'] },
+          path: 'about',
+          name: 'about',
+          component: () => import('@/views/about/AboutView.vue'),
         },
       ],
     },
@@ -124,7 +91,7 @@ const router = createRouter({
     // Catch-all
     {
       path: '/:pathMatch(.*)*',
-      redirect: '/dashboard',
+      redirect: '/home',
     },
   ],
 })
@@ -146,12 +113,11 @@ router.beforeEach(async (to) => {
   }
 
   if (guestOnly && authStore.isAuthenticated) {
-    return { name: 'dashboard' }
+    return { name: 'home' }
   }
 
-  // Role-based access control
   if (roles && authStore.userRole && !roles.includes(authStore.userRole)) {
-    return { name: 'dashboard' }
+    return { name: 'home' }
   }
 })
 

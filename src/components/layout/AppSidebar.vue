@@ -2,21 +2,12 @@
 import { computed, ref } from 'vue'
 import {
   LayoutDashboard,
-  Hotel,
-  CalendarDays,
-  UtensilsCrossed,
-  ReceiptText,
   Users,
-  Building2,
-  BarChart3,
-  ShieldCheck,
+  FileText,
+  Info,
   LogOut,
   ChevronUp,
   User2,
-  BookOpen,
-  FileText,
-  GitBranch,
-  Inbox,
 } from 'lucide-vue-next'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -57,94 +48,25 @@ function navigate(routeName: string) {
   router.push({ name: routeName })
 }
 
-const adminNav = [
+const navGroups = computed(() => [
   {
-    label: 'Overview',
+    label: 'Main',
     items: [
-      { title: 'Dashboard', icon: LayoutDashboard, routeName: 'dashboard' },
-    ],
-  },
-  {
-    label: 'Management',
-    items: [
-      { title: 'Rooms', icon: Hotel, routeName: 'rooms' },
-      { title: 'Bookings', icon: CalendarDays, routeName: 'admin-bookings' },
-      { title: 'Meals', icon: UtensilsCrossed, routeName: 'meals' },
-      { title: 'Invoices', icon: ReceiptText, routeName: 'admin-invoices' },
-    ],
-  },
-  {
-    label: 'Clients',
-    items: [
-      { title: 'Individual Clients', icon: Users, routeName: 'clients-individual' },
-      { title: 'Corporate Clients', icon: Building2, routeName: 'clients-corporate' },
-    ],
-  },
-  {
-    label: 'Reports',
-    items: [
-      { title: 'Reports', icon: BarChart3, routeName: 'reports' },
-    ],
-  },
-  {
-    label: 'Workflow',
-    items: [
-      { title: 'Workflow Editor', icon: GitBranch, routeName: 'workflow' },
-      { title: 'Task Inbox', icon: Inbox, routeName: 'workflow-tasks' },
+      { title: 'Home', icon: LayoutDashboard, routeName: 'home' },
+      { title: 'Children', icon: Users, routeName: 'children' },
+      { title: 'Reports', icon: FileText, routeName: 'reports' },
     ],
   },
   {
     label: 'System',
     items: [
-      { title: 'System Users', icon: ShieldCheck, routeName: 'users' },
+      ...(authStore.userRole === 'admin'
+        ? [{ title: 'System Users', icon: User2, routeName: 'users' }]
+        : []),
+      { title: 'About', icon: Info, routeName: 'about' },
     ],
   },
-]
-
-const clientNav = [
-  {
-    label: 'Overview',
-    items: [
-      { title: 'Dashboard', icon: LayoutDashboard, routeName: 'dashboard' },
-    ],
-  },
-  {
-    label: 'Bookings',
-    items: [
-      { title: 'Book a Room', icon: BookOpen, routeName: 'book' },
-      { title: 'My Bookings', icon: CalendarDays, routeName: 'my-bookings' },
-    ],
-  },
-  {
-    label: 'Billing',
-    items: [
-      { title: 'My Invoices', icon: FileText, routeName: 'my-invoices' },
-    ],
-  },
-]
-
-const STAFF_ROLES = ['admin', 'manager', 'receptionist', 'cleaner']
-
-const cleanerNav = [
-  {
-    label: 'Overview',
-    items: [
-      { title: 'My Dashboard', icon: LayoutDashboard, routeName: 'cleaner-dashboard' },
-    ],
-  },
-  {
-    label: 'Rooms',
-    items: [
-      { title: 'Rooms', icon: Hotel, routeName: 'rooms' },
-    ],
-  },
-]
-
-const navGroups = computed(() => {
-  if (authStore.userRole === 'cleaner') return cleanerNav
-  if (STAFF_ROLES.includes(authStore.userRole ?? '')) return adminNav
-  return clientNav
-})
+])
 
 async function handleLogout() {
   await authStore.logout()
@@ -158,12 +80,12 @@ async function handleLogout() {
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" as-child>
-            <RouterLink :to="{ name: 'dashboard' }">
+            <RouterLink :to="{ name: 'home' }">
               <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
-                LM
+                OVC
               </div>
               <div class="flex flex-col gap-0.5 leading-none">
-                <span class="font-semibold">Lodge Management</span>
+                <span class="font-semibold">OVC-MIS</span>
                 <span class="text-xs text-muted-foreground">{{ authStore.roleLabel }}</span>
               </div>
             </RouterLink>
@@ -178,7 +100,11 @@ async function handleLogout() {
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem v-for="item in group.items" :key="item.title">
-              <SidebarMenuButton :tooltip="item.title" :is-active="route.name === item.routeName" @click="navigate(item.routeName)">
+              <SidebarMenuButton
+                :tooltip="item.title"
+                :is-active="route.name === item.routeName"
+                @click="navigate(item.routeName)"
+              >
                 <component :is="item.icon" />
                 <span>{{ item.title }}</span>
               </SidebarMenuButton>
@@ -203,10 +129,6 @@ async function handleLogout() {
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="top" class="w-(--reka-dropdown-menu-trigger-width)">
-              <DropdownMenuItem @click="router.push({ name: 'profile' })" class="cursor-pointer">
-                <User2 class="size-4" />
-                Profile
-              </DropdownMenuItem>
               <DropdownMenuItem
                 @click="handleLogout"
                 class="text-destructive focus:text-destructive cursor-pointer"

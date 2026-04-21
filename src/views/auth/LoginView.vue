@@ -5,9 +5,7 @@ import { useAuthStore } from '@/stores/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Checkbox } from '@/components/ui/checkbox'
-import ChangePasswordDialog from '@/components/auth/ChangePasswordDialog.vue'
-import { Trees, Eye, EyeOff, Loader2 } from 'lucide-vue-next'
+import { Eye, EyeOff, Loader2, GraduationCap } from 'lucide-vue-next'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -15,22 +13,12 @@ const authStore = useAuthStore()
 const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
-const showChangePasswordDialog = ref(false)
 
 async function handleSubmit() {
   const success = await authStore.login({ email: email.value, password: password.value })
   if (success) {
-    if (authStore.user?.change_password) {
-      showChangePasswordDialog.value = true
-    } else {
-      router.push({ name: 'dashboard' })
-    }
+    router.push({ name: 'home' })
   }
-}
-
-function handlePasswordChanged() {
-  showChangePasswordDialog.value = false
-  router.push({ name: 'dashboard' })
 }
 </script>
 
@@ -41,23 +29,22 @@ function handlePasswordChanged() {
     <div class="flex items-center justify-center px-6 py-12 lg:px-8">
       <div class="w-full max-w-md">
 
-        <!-- Glass card -->
         <div class="rounded-2xl border border-border/40 bg-card/70 p-8 shadow-2xl shadow-primary/5 backdrop-blur-xl">
 
           <!-- Logo & Title -->
           <div class="flex flex-col items-center gap-4 text-center mb-8">
-            <div class="flex items-center gap-2">
-              <Trees class="h-8 w-8 text-primary" />
-              <span class="font-serif text-2xl font-semibold tracking-tight text-foreground">
-                Pine Ridge Lodge
-              </span>
+            <div class="flex items-center justify-center size-14 rounded-full bg-primary/10">
+              <GraduationCap class="size-8 text-primary" />
             </div>
             <div>
-              <h1 class="font-serif text-3xl font-bold tracking-tight text-foreground">
-                Welcome Back
+              <h1 class="text-2xl font-bold tracking-tight text-foreground">
+                OVC Management System
               </h1>
-              <p class="mt-2 text-muted-foreground">
-                Sign in to your management dashboard
+              <p class="mt-1 text-sm font-medium text-muted-foreground">
+                Helen Kaunda Secondary School
+              </p>
+              <p class="mt-3 text-muted-foreground text-sm">
+                Sign in to access the system
               </p>
             </div>
           </div>
@@ -79,7 +66,7 @@ function handlePasswordChanged() {
                 id="email"
                 v-model="email"
                 type="email"
-                placeholder="manager@pineridgelodge.com"
+                placeholder="staff@helenkaunda.edu.zm"
                 required
                 autocomplete="email"
                 class="h-11 bg-background/50 backdrop-blur-sm border-border/50 focus:border-primary"
@@ -87,12 +74,7 @@ function handlePasswordChanged() {
             </div>
 
             <div class="flex flex-col gap-2">
-              <div class="flex items-center justify-between">
-                <Label for="password" class="text-foreground/80">Password</Label>
-                <a href="#" class="text-sm text-primary hover:text-primary/80 transition-colors" @click.prevent>
-                  Forgot password?
-                </a>
-              </div>
+              <Label for="password" class="text-foreground/80">Password</Label>
               <div class="relative">
                 <Input
                   id="password"
@@ -128,53 +110,36 @@ function handlePasswordChanged() {
             </Button>
           </form>
 
-          <!-- Footer links -->
           <p class="mt-6 text-center text-sm text-muted-foreground">
-            Need assistance?
-            <a href="#" class="text-primary hover:text-primary/80 transition-colors">Contact Support</a>
+            Need assistance? Contact your system administrator.
           </p>
         </div>
 
-        <!-- Terms -->
         <p class="mt-8 text-center text-xs text-muted-foreground">
-          Developed by HexaPrime LTD. &copy; 2026. All rights reserved.
+          OVC-MIS &copy; {{ new Date().getFullYear() }} · Helen Kaunda Secondary School
         </p>
       </div>
     </div>
 
-    <!-- Right Side — Hero Image -->
-    <div class="relative hidden lg:block">
-      <img
-        src="/lodge-hero.jpg"
-        alt="Pine Ridge Lodge nestled in the mountains"
-        class="absolute inset-0 h-full w-full object-cover"
-      />
-
-      <!-- Gradient overlay -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-
-      <!-- Quote overlay -->
-      <div class="absolute inset-0 flex flex-col justify-end p-12">
-        <div class="max-w-lg">
-          <blockquote class="space-y-4">
-            <p class="font-serif text-2xl font-medium leading-relaxed text-white/95">
-              "Where the mountains meet the sky, and every guest becomes family."
-            </p>
-            <footer class="text-white/70">
-              <p class="text-sm font-medium">Pine Ridge Lodge</p>
-            </footer>
-          </blockquote>
+    <!-- Right Side — Brand Panel -->
+    <div class="relative hidden lg:flex flex-col items-center justify-center bg-primary px-12">
+      <div class="max-w-md text-center">
+        <div class="flex items-center justify-center size-20 rounded-full bg-white/10 mx-auto mb-8">
+          <GraduationCap class="size-10 text-white" />
         </div>
+        <h2 class="text-3xl font-bold text-white mb-4">
+          Orphan & Vulnerable Children
+        </h2>
+        <p class="text-white/80 text-lg leading-relaxed mb-8">
+          Management Information System
+        </p>
+        <p class="text-white/60 text-sm leading-relaxed">
+          A secure digital system for registering, tracking, and reporting on children
+          receiving OVC grant support — improving data integrity, transparency, and
+          accountability at Helen Kaunda Secondary School.
+        </p>
       </div>
     </div>
 
   </div>
-
-  <!-- Change Password Dialog -->
-  <ChangePasswordDialog
-    :open="showChangePasswordDialog"
-    :current-password="password"
-    @update:open="(val) => (showChangePasswordDialog = val)"
-    @success="handlePasswordChanged"
-  />
 </template>
