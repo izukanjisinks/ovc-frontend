@@ -4,7 +4,7 @@ import { mockChildrenApi } from '@/services/mock/children'
 import type { Child, ChildWithRelations, ChildPayload } from '@/types/child'
 
 export const useChildrenStore = defineStore('children', () => {
-  const children = ref<Child[]>([])
+  const children = ref<ChildWithRelations[]>([])
   const selected = ref<ChildWithRelations | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)

@@ -130,16 +130,15 @@ const MOCK_CHILDREN: ChildWithRelations[] = [
 ]
 
 export const mockChildrenApi = {
-  async list(search?: string): Promise<Child[]> {
+  async list(search?: string): Promise<ChildWithRelations[]> {
     await delay()
-    const list: Child[] = MOCK_CHILDREN.map(({ categories: _, requisites: __, sponsors: ___, ...c }) => c)
-    if (!search) return list
+    if (!search) return MOCK_CHILDREN.map(c => ({ ...c }))
     const q = search.toLowerCase()
-    return list.filter(c =>
+    return MOCK_CHILDREN.filter(c =>
       c.pupil_id.toLowerCase().includes(q) ||
       c.first_name.toLowerCase().includes(q) ||
       c.last_name.toLowerCase().includes(q),
-    )
+    ).map(c => ({ ...c }))
   },
 
   async get(id: string): Promise<ChildWithRelations> {
