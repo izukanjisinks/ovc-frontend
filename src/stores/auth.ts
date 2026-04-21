@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { authApi } from '@/services/api/auth'
+import { mockAuthApi as authApi } from '@/services/mock/auth'
 import type { AuthUser, AuthRole, LoginCredentials, ApiError, UserRole } from '@/types/auth'
 
 function extractRole(role: AuthRole | undefined): UserRole | null {
