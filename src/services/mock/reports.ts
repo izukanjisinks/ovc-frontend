@@ -1,4 +1,5 @@
-import type { Report, ReportPayload, ReportFilters } from '@/types/report'
+import type { Report, ReportPayload, ReportFilters, ReportBeneficiary } from '@/types/report'
+import { mockChildrenApi } from './children'
 
 function delay(ms = 400): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -12,6 +13,27 @@ function now(): string {
   return new Date().toISOString()
 }
 
+async function resolveBeneficiaries(child_ids: string[]): Promise<ReportBeneficiary[]> {
+  const results: ReportBeneficiary[] = []
+  for (const id of child_ids) {
+    try {
+      const child = await mockChildrenApi.get(id)
+      results.push({
+        id: child.id,
+        pupil_id: child.pupil_id,
+        first_name: child.first_name,
+        last_name: child.last_name,
+        class_name: child.class_name,
+        sponsors: child.sponsors,
+        categories: child.categories,
+      })
+    } catch {
+      // child may have been deleted
+    }
+  }
+  return results
+}
+
 const MOCK_REPORTS: Report[] = [
   {
     id: '1',
@@ -23,6 +45,7 @@ const MOCK_REPORTS: Report[] = [
     created_by_name: 'Grace Mwale',
     created_at: '2024-04-15T08:00:00Z',
     updated_at: '2024-04-15T08:00:00Z',
+    beneficiaries: [],
   },
   {
     id: '2',
@@ -34,6 +57,7 @@ const MOCK_REPORTS: Report[] = [
     created_by_name: 'Grace Mwale',
     created_at: '2024-08-20T10:00:00Z',
     updated_at: '2024-08-20T10:00:00Z',
+    beneficiaries: [],
   },
   {
     id: '3',
@@ -45,6 +69,7 @@ const MOCK_REPORTS: Report[] = [
     created_by_name: 'Admin User',
     created_at: '2024-12-05T09:00:00Z',
     updated_at: '2024-12-05T09:00:00Z',
+    beneficiaries: [],
   },
 ]
 
@@ -66,13 +91,18 @@ export const mockReportsApi = {
 
   async create(payload: ReportPayload, authorName: string, authorId: string): Promise<Report> {
     await delay()
+    const beneficiaries = await resolveBeneficiaries(payload.child_ids)
     const report: Report = {
       id: uuid(),
-      ...payload,
+      title: payload.title,
+      body: payload.body,
+      term: payload.term,
+      year: payload.year,
       created_by: authorId,
       created_by_name: authorName,
       created_at: now(),
       updated_at: now(),
+      beneficiaries,
     }
     MOCK_REPORTS.unshift(report)
     return report
@@ -82,7 +112,15 @@ export const mockReportsApi = {
     await delay()
     const idx = MOCK_REPORTS.findIndex(r => r.id === id)
     if (idx === -1) throw { error: { code: 'NOT_FOUND', message: 'Report not found.' } }
-    MOCK_REPORTS[idx] = { ...MOCK_REPORTS[idx]!, ...payload, updated_at: now() }
+    const beneficiaries = payload.child_ids
+      ? await resolveBeneficiaries(payload.child_ids)
+      : MOCK_REPORTS[idx]!.beneficiaries
+    MOCK_REPORTS[idx] = {
+      ...MOCK_REPORTS[idx]!,
+      ...payload,
+      beneficiaries,
+      updated_at: now(),
+    }
     return { ...MOCK_REPORTS[idx]! }
   },
 

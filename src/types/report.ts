@@ -10,6 +10,17 @@ export interface Report {
   created_by_name: string
   created_at: string
   updated_at: string
+  beneficiaries: ReportBeneficiary[]
+}
+
+export interface ReportBeneficiary {
+  id: string
+  pupil_id: string
+  first_name: string
+  last_name: string
+  class_name: string
+  sponsors: { id: number; name: string }[]
+  categories: { id: number; name: string }[]
 }
 
 export interface ReportPayload {
@@ -17,6 +28,7 @@ export interface ReportPayload {
   body: string
   term: ReportTerm
   year: number
+  child_ids: string[]
 }
 
 export interface ReportFilters {
