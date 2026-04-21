@@ -72,7 +72,7 @@ const isEdit = computed(() => !!props.user)
 const form = ref({
   full_name: '',
   email: '',
-  role: 'receptionist' as SystemUserRole,
+  role: 'user' as SystemUserRole,
   status: 'active' as SystemUserStatus,
   password: '',
 })
@@ -89,7 +89,7 @@ watch(() => props.open, (open) => {
       password: '',
     }
   } else {
-    form.value = { full_name: '', email: '', role: 'receptionist', status: 'active', password: '' }
+    form.value = { full_name: '', email: '', role: 'user', status: 'active', password: '' }
   }
 })
 
@@ -148,7 +148,7 @@ async function handleSave() {
 
         <div class="grid gap-2">
           <Label for="email">Email *</Label>
-          <Input id="email" v-model="form.email" type="email" placeholder="grace@lodge.dev" />
+          <Input id="email" v-model="form.email" type="email" placeholder="grace@ovc.edu" />
         </div>
 
         <div class="grid grid-cols-2 gap-4">
@@ -160,9 +160,8 @@ async function handleSave() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="manager">Manager</SelectItem>
-                <SelectItem value="receptionist">Receptionist</SelectItem>
-                <SelectItem value="cleaner">Cleaner</SelectItem>
+                <SelectItem value="user">Guidance Staff</SelectItem>
+                <SelectItem value="inspector">Inspector</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -208,7 +207,7 @@ async function handleSave() {
               <RefreshCw class="size-4" />
             </Button>
           </div>
-          <p v-if="isEdit" class="text-xs text-red-500">This will reset the user's password. User will be notified via email.</p>
+          <p v-if="isEdit" class="text-xs text-muted-foreground">Leave blank to keep the current password.</p>
         </div>
       </form>
 

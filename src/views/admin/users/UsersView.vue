@@ -53,11 +53,9 @@ const filtered = computed(() => {
 const { page, totalPages, paginated, prev, next, goTo, pageNumbers } = usePagination(filtered)
 
 const roleConfig: Record<SystemUserRole, { label: string; variant: 'default' | 'secondary' | 'outline' }> = {
-  admin:        { label: 'Admin',        variant: 'default' },
-  manager:      { label: 'Manager',      variant: 'secondary' },
-  receptionist: { label: 'Receptionist', variant: 'outline' },
-  cleaner:      { label: 'Cleaner',      variant: 'outline' },
-  guest:        { label: 'Guest',        variant: 'outline' },
+  admin:     { label: 'Admin',           variant: 'default' },
+  user:      { label: 'Guidance Staff',  variant: 'secondary' },
+  inspector: { label: 'Inspector',       variant: 'outline' },
 }
 
 function formatDate(d?: string) {
@@ -168,7 +166,6 @@ const currentUserEmail = computed(() => authStore.user?.email)
                 <div class="flex justify-end gap-1">
                   <Button
                     variant="ghost" size="icon" class="size-8"
-                    :disabled="user.role === 'guest'"
                     @click="openEdit(user)"
                   >
                     <Pencil class="size-4" />
@@ -176,7 +173,7 @@ const currentUserEmail = computed(() => authStore.user?.email)
                   <Button
                     variant="ghost" size="icon"
                     class="size-8 text-destructive hover:text-destructive"
-                    :disabled="user.role === 'guest' || user.email === currentUserEmail"
+                    :disabled="user.email === currentUserEmail"
                     @click="confirmDelete(user)"
                   >
                     <Trash2 class="size-4" />

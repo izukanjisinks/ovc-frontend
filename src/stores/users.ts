@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { usersApi } from '@/services/api/users'
+import { mockUsersApi as usersApi } from '@/services/mock/users'
 import type { SystemUser, SystemUserPayload } from '@/types/user'
 
 export const useUsersStore = defineStore('users', () => {

@@ -2,12 +2,11 @@
 import { onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Users, FileText, BookOpen, ArrowRight, Loader2 } from 'lucide-vue-next'
-import { VisSingleContainer, VisDonut } from '@unovis/vue'
+import { VisSingleContainer, VisDonut, VisXYContainer, VisGroupedBar, VisAxis } from '@unovis/vue'
 import { useDashboardStore } from '@/stores/dashboard'
 import { useAuthStore } from '@/stores/auth'
 import DashboardHeader from '@/components/dashboard/DashboardHeader.vue'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 const router = useRouter()
@@ -35,106 +34,134 @@ const firstName = computed(() => {
 
 type ChartDatum = { name: string; count: number }
 
-const categoryValue = (d: ChartDatum) => d.count
+// Bar chart (category)
+const barCount  = (d: ChartDatum) => d.count
+const barColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PALETTE.length]!
+
+// Donut chart (sponsor)
 const sponsorValue  = (d: ChartDatum) => d.count
-const categoryColor = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PALETTE.length]!
 const sponsorColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PALETTE.length]!
 </script>
 
 <template>
   <DashboardHeader title="Home" />
 
-  <div class="flex flex-col gap-8 p-6 max-w-5xl mx-auto w-full">
+  <div class="flex flex-col gap-8 p-6">
 
-    <!-- Welcome banner -->
-    <div class="rounded-xl bg-primary px-8 py-6 text-primary-foreground flex flex-col gap-1">
-      <p class="text-sm opacity-80">{{ greeting }},</p>
-      <h1 class="text-2xl font-bold">{{ firstName }}</h1>
-      <p class="text-sm opacity-70 mt-1">Helen Kaunda Secondary School — OVC Management System</p>
+    <!-- Page heading -->
+    <div>
+      <h2 class="text-2xl font-bold tracking-tight">System Overview</h2>
+      <p class="text-muted-foreground text-sm mt-1">
+        {{ greeting }}, {{ firstName }}. Real-time tracking for OVC support initiatives.
+      </p>
     </div>
 
-    <!-- Stats cards -->
-    <div v-if="store.loading" class="flex items-center justify-center py-16">
+    <!-- Loading -->
+    <div v-if="store.loading" class="flex items-center justify-center py-24">
       <Loader2 class="size-6 animate-spin text-muted-foreground" />
     </div>
 
     <template v-else-if="store.stats">
-      <!-- Summary row -->
+
+      <!-- Stats row -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <!-- Total children -->
-        <Card class="border-l-4 border-l-primary">
-          <CardContent class="pt-6 flex items-center gap-4">
-            <div class="size-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <Users class="size-6 text-primary" />
-            </div>
-            <div>
-              <p class="text-3xl font-bold">{{ store.stats.total_children }}</p>
-              <p class="text-sm text-muted-foreground">Registered Children</p>
+
+        <Card>
+          <CardContent class="pt-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm text-muted-foreground">Registered Children</p>
+                <p class="text-4xl font-bold mt-1">{{ store.stats.total_children }}</p>
+                <p class="text-xs text-muted-foreground mt-2">Active beneficiaries</p>
+              </div>
+              <div class="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Users class="size-5 text-primary" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <!-- Category breakdown count -->
-        <Card class="border-l-4 border-l-emerald-500">
-          <CardContent class="pt-6 flex items-center gap-4">
-            <div class="size-12 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
-              <BookOpen class="size-6 text-emerald-600" />
-            </div>
-            <div>
-              <p class="text-3xl font-bold">{{ store.stats.by_category.length }}</p>
-              <p class="text-sm text-muted-foreground">OVC Categories</p>
+        <Card>
+          <CardContent class="pt-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm text-muted-foreground">OVC Categories</p>
+                <p class="text-4xl font-bold mt-1">{{ store.stats.by_category.length }}</p>
+                <p class="text-xs text-muted-foreground mt-2">Diversity in support needs</p>
+              </div>
+              <div class="size-11 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
+                <BookOpen class="size-5 text-emerald-700" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <!-- Sponsor count -->
-        <Card class="border-l-4 border-l-green-400">
-          <CardContent class="pt-6 flex items-center gap-4">
-            <div class="size-12 rounded-full bg-green-50 flex items-center justify-center shrink-0">
-              <FileText class="size-6 text-green-600" />
-            </div>
-            <div>
-              <p class="text-3xl font-bold">{{ store.stats.by_sponsor.length }}</p>
-              <p class="text-sm text-muted-foreground">Active Sponsors</p>
+        <Card>
+          <CardContent class="pt-6">
+            <div class="flex items-start justify-between">
+              <div>
+                <p class="text-sm text-muted-foreground">Active Sponsors</p>
+                <p class="text-4xl font-bold mt-1">{{ store.stats.by_sponsor.length }}</p>
+                <p class="text-xs text-muted-foreground mt-2">Funding sources</p>
+              </div>
+              <div class="size-11 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
+                <FileText class="size-5 text-orange-600" />
+              </div>
             </div>
           </CardContent>
         </Card>
+
       </div>
 
       <!-- Charts row -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-        <!-- By Category -->
+        <!-- By Category — vertical bar chart -->
         <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-base">Children by Category</CardTitle>
-            <CardDescription>Distribution across OVC vulnerability categories</CardDescription>
+          <CardHeader class="pb-0">
+            <CardTitle class="text-base font-semibold">Children by Category</CardTitle>
           </CardHeader>
-          <CardContent class="flex flex-col items-center gap-4">
-            <VisSingleContainer :data="store.stats.by_category" :height="200">
-              <VisDonut
-                :value="categoryValue"
-                :color="categoryColor"
-                :arc-width="28"
-                :central-label="String(store.stats.total_children)"
-                central-sub-label="Children"
+          <CardContent class="pt-2 pb-4">
+            <VisXYContainer
+              :data="store.stats.by_category"
+              :height="260"
+              :margin="{ left: 28, right: 8, top: 8, bottom: 24 }"
+            >
+              <VisGroupedBar
+                :x="(_d: ChartDatum, i: number) => i"
+                :y="[barCount]"
+                :color="barColor"
+                :rounded-corners="3"
+                :bar-padding="0.1"
+                :group-padding="0.2"
               />
-            </VisSingleContainer>
-            <!-- Legend -->
-            <div class="flex flex-col gap-1.5 w-full">
+              <VisAxis
+                type="x"
+                :tick-format="(_v: number, i: number) => String(i + 1)"
+                :grid-line="false"
+                :tick-line="false"
+                :num-ticks="store.stats.by_category.length"
+              />
+              <VisAxis
+                type="y"
+                :grid-line="true"
+                :tick-line="false"
+                :num-ticks="4"
+              />
+            </VisXYContainer>
+            <!-- Numbered legend -->
+            <div class="flex flex-col gap-1 mt-3">
               <div
                 v-for="(item, i) in store.stats.by_category"
                 :key="item.name"
-                class="flex items-center justify-between text-sm"
+                class="flex items-center gap-2 text-xs"
               >
-                <div class="flex items-center gap-2">
-                  <span
-                    class="size-3 rounded-sm shrink-0"
-                    :style="{ backgroundColor: GREEN_PALETTE[i % GREEN_PALETTE.length] }"
-                  />
-                  <span class="text-muted-foreground truncate max-w-45">{{ item.name }}</span>
-                </div>
-                <Badge variant="secondary" class="shrink-0">{{ item.count }}</Badge>
+                <span
+                  class="size-4 rounded flex items-center justify-center text-white font-bold shrink-0 text-[10px]"
+                  :style="{ backgroundColor: GREEN_PALETTE[i % GREEN_PALETTE.length] }"
+                >{{ i + 1 }}</span>
+                <span class="text-muted-foreground">{{ item.name }}</span>
+                <span class="font-medium ml-auto">{{ item.count }}</span>
               </div>
             </div>
           </CardContent>
@@ -142,35 +169,33 @@ const sponsorColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PAL
 
         <!-- By Sponsor -->
         <Card>
-          <CardHeader class="pb-2">
-            <CardTitle class="text-base">Children by Sponsor</CardTitle>
-            <CardDescription>Funding source breakdown for registered children</CardDescription>
+          <CardHeader class="pb-0">
+            <CardTitle class="text-base font-semibold">Children by Sponsor</CardTitle>
           </CardHeader>
-          <CardContent class="flex flex-col items-center gap-4">
-            <VisSingleContainer :data="store.stats.by_sponsor" :height="200">
+          <CardContent class="pt-4 flex flex-col items-center gap-4">
+            <!-- Donut centered -->
+            <VisSingleContainer :data="store.stats.by_sponsor" :height="260">
               <VisDonut
                 :value="sponsorValue"
                 :color="sponsorColor"
-                :arc-width="28"
+                :arc-width="36"
                 :central-label="String(store.stats.total_children)"
-                central-sub-label="Children"
+                central-sub-label="TOTAL"
               />
             </VisSingleContainer>
-            <!-- Legend -->
-            <div class="flex flex-col gap-1.5 w-full">
+            <!-- Legend below -->
+            <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 w-full">
               <div
                 v-for="(item, i) in store.stats.by_sponsor"
                 :key="item.name"
-                class="flex items-center justify-between text-sm"
+                class="flex items-center gap-1.5 text-sm"
               >
-                <div class="flex items-center gap-2">
-                  <span
-                    class="size-3 rounded-sm shrink-0"
-                    :style="{ backgroundColor: GREEN_PALETTE[i % GREEN_PALETTE.length] }"
-                  />
-                  <span class="text-muted-foreground truncate max-w-45">{{ item.name }}</span>
-                </div>
-                <Badge variant="secondary" class="shrink-0">{{ item.count }}</Badge>
+                <span
+                  class="size-2.5 rounded-full shrink-0"
+                  :style="{ backgroundColor: GREEN_PALETTE[i % GREEN_PALETTE.length] }"
+                />
+                <span class="text-muted-foreground">{{ item.name }}</span>
+                <span class="font-medium">{{ item.count }}</span>
               </div>
             </div>
           </CardContent>
@@ -178,33 +203,42 @@ const sponsorColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PAL
 
       </div>
 
-      <!-- Quick links -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Card class="cursor-pointer hover:bg-muted/40 transition-colors" @click="router.push({ name: 'children' })">
-          <CardContent class="pt-6 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <Users class="size-5 text-primary" />
-              <div>
-                <p class="font-medium text-sm">Manage Children</p>
-                <p class="text-xs text-muted-foreground">View and update registered OVC beneficiaries</p>
-              </div>
-            </div>
-            <ArrowRight class="size-4 text-muted-foreground" />
-          </CardContent>
-        </Card>
+      <!-- Quick actions -->
+      <div>
+        <h3 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">System Actions</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-        <Card class="cursor-pointer hover:bg-muted/40 transition-colors" @click="router.push({ name: 'reports' })">
-          <CardContent class="pt-6 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <FileText class="size-5 text-primary" />
-              <div>
-                <p class="font-medium text-sm">Term Reports</p>
-                <p class="text-xs text-muted-foreground">Create and download OVC grant reports</p>
+          <Card
+            class="cursor-pointer hover:bg-muted/40 transition-colors"
+            @click="router.push({ name: 'children' })"
+          >
+            <CardContent class="pt-6 flex items-center gap-4">
+              <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <Users class="size-5 text-primary" />
               </div>
-            </div>
-            <ArrowRight class="size-4 text-muted-foreground" />
-          </CardContent>
-        </Card>
+              <div>
+                <p class="font-semibold text-sm">Manage Children</p>
+                <p class="text-xs text-muted-foreground mt-0.5">View, register, and update OVC beneficiary profiles.</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card
+            class="cursor-pointer hover:bg-muted/40 transition-colors"
+            @click="router.push({ name: 'reports' })"
+          >
+            <CardContent class="pt-6 flex items-center gap-4">
+              <div class="size-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <FileText class="size-5 text-primary" />
+              </div>
+              <div>
+                <p class="font-semibold text-sm">Term Reports</p>
+                <p class="text-xs text-muted-foreground mt-0.5">Generate automated summary reports for donor compliance.</p>
+              </div>
+            </CardContent>
+          </Card>
+
+        </div>
       </div>
 
     </template>

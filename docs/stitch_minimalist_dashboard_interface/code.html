@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Helen Kaunda OVC-MIS Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "background": "#f7f9fb",
+                      "surface-tint": "#4d44e3",
+                      "inverse-primary": "#c3c0ff",
+                      "on-secondary-fixed-variant": "#38485d",
+                      "outline-variant": "#c7c4d8",
+                      "primary": "#3525cd",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed": "#0b1c30",
+                      "tertiary-container": "#a44100",
+                      "outline": "#777587",
+                      "surface": "#f7f9fb",
+                      "inverse-on-surface": "#eff1f3",
+                      "on-secondary": "#ffffff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed": "#351000",
+                      "primary-fixed-dim": "#c3c0ff",
+                      "secondary-fixed": "#d3e4fe",
+                      "surface-container-high": "#e6e8ea",
+                      "secondary-fixed-dim": "#b7c8e1",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#f7f9fb",
+                      "on-primary-container": "#dad7ff",
+                      "surface-variant": "#e0e3e5",
+                      "inverse-surface": "#2d3133",
+                      "on-secondary-container": "#54647a",
+                      "on-primary-fixed-variant": "#3323cc",
+                      "on-background": "#191c1e",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed": "#ffdbcc",
+                      "tertiary-fixed-dim": "#ffb695",
+                      "on-tertiary-container": "#ffd2be",
+                      "surface-container": "#eceef0",
+                      "secondary": "#505f76",
+                      "on-primary-fixed": "#0f0069",
+                      "on-primary": "#ffffff",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-dim": "#d8dadc",
+                      "on-surface": "#191c1e",
+                      "secondary-container": "#d0e1fb",
+                      "error-container": "#ffdad6",
+                      "primary-fixed": "#e2dfff",
+                      "on-tertiary-fixed-variant": "#7b2f00",
+                      "surface-container-lowest": "#ffffff",
+                      "on-surface-variant": "#464555",
+                      "tertiary": "#7e3000",
+                      "surface-container-highest": "#e0e3e5",
+                      "primary-container": "#4f46e5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Inter"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+      </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+<!-- Sidebar Navigation Shell -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-[#f2f4f6] dark:bg-slate-900 flex flex-col gap-2 p-6 font-['Inter'] antialiased tracking-tight">
+<div class="mb-8 px-2">
+<h1 class="text-xl font-bold text-[#3525cd] dark:text-indigo-400">Helen Kaunda</h1>
+<p class="text-xs font-medium text-on-secondary-container">OVC Management</p>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 text-[#3525cd] dark:text-indigo-300 font-bold bg-white dark:bg-slate-800 rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+<span>Home</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#464555] dark:text-slate-400 font-medium hover:bg-white/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">family_restroom</span>
+<span>Children</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#464555] dark:text-slate-400 font-medium hover:bg-white/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>Reports</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#464555] dark:text-slate-400 font-medium hover:bg-white/50 dark:hover:bg-slate-800/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">info</span>
+<span>About</span>
+</a>
+</nav>
+<div class="mt-auto">
+<button class="w-full py-3 px-4 bg-gradient-to-br from-primary to-primary-container text-white rounded-lg font-bold flex items-center justify-center gap-2 active:scale-95 duration-150 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>Add New Case</span>
+</button>
+</div>
+</aside>
+<!-- Main Canvas Area -->
+<main class="ml-64 min-h-screen">
+<!-- Top App Bar -->
+<header class="w-full h-16 sticky top-0 z-40 bg-[#f7f9fb] dark:bg-slate-950 flex items-center justify-between px-8">
+<div class="flex items-center gap-4">
+<div class="bg-surface-container-high px-4 py-1.5 rounded-full flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-lg">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48" placeholder="Search records..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<button class="p-2 text-on-surface-variant hover:bg-[#f2f4f6] dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-[#f2f4f6] dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="flex items-center gap-3 pl-6 border-l border-outline-variant/30">
+<div class="text-right">
+<p class="text-sm font-bold text-on-surface">Good afternoon, Admin</p>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest">School Coordinator</p>
+</div>
+<img class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm" data-alt="professional male school administrator portrait with friendly expression and clean office background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhcckF66p4xso_SrGFnHigSawB2XL-p6dYyDjiDXVlMFAq2z_GU8cWFP5ne9UspfXXMU0uDYkOjsCVVDKo_JAM6HH7gTCVXrqfAzI-9sEnKrhcvIS6-iszkVBGQBh1dEuf74vC7TKRe8qcAMZb31aljrVbyaJKVeACjB3Ej5r730zA7EUGgb-W3fRb7VlSZEMc_68DNffuqiZDI2iUVFPSlRaG_y-nObxj2e5ngMiMEmgb9lUJYgE2_7YEhGvWCBgKrtsS-xh0gUIJ"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="p-8 max-w-7xl mx-auto space-y-10">
+<!-- Dashboard Introduction -->
+<section>
+<h2 class="text-3xl font-extrabold tracking-tight text-on-surface">System Overview</h2>
+<p class="text-on-surface-variant mt-1">Real-time tracking for OVC support initiatives.</p>
+</section>
+<!-- Stats Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Stat Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border-l-4 border-primary shadow-sm flex items-center justify-between">
+<div>
+<p class="text-sm font-semibold text-on-surface-variant">Registered Children</p>
+<h3 class="text-4xl font-black text-primary mt-1">5</h3>
+<p class="text-xs text-on-secondary-container mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>+2 from last term</span>
+</p>
+</div>
+<div class="bg-primary-fixed p-3 rounded-lg text-primary">
+<span class="material-symbols-outlined text-3xl">child_care</span>
+</div>
+</div>
+<!-- Stat Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border-l-4 border-secondary shadow-sm flex items-center justify-between">
+<div>
+<p class="text-sm font-semibold text-on-surface-variant">OVC Categories</p>
+<h3 class="text-4xl font-black text-secondary mt-1">7</h3>
+<p class="text-xs text-on-surface-variant mt-2">Diversity in support needs</p>
+</div>
+<div class="bg-secondary-fixed p-3 rounded-lg text-secondary">
+<span class="material-symbols-outlined text-3xl">category</span>
+</div>
+</div>
+<!-- Stat Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border-l-4 border-tertiary-container shadow-sm flex items-center justify-between">
+<div>
+<p class="text-sm font-semibold text-on-surface-variant">Active Sponsors</p>
+<h3 class="text-4xl font-black text-tertiary-container mt-1">3</h3>
+<p class="text-xs text-on-surface-variant mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-primary">verified</span>
+<span>Fully verified</span>
+</p>
+</div>
+<div class="bg-tertiary-fixed p-3 rounded-lg text-tertiary-container">
+<span class="material-symbols-outlined text-3xl">volunteer_activism</span>
+</div>
+</div>
+</section>
+<!-- Visualizations -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<!-- Donut Chart Left -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm">
+<div class="flex justify-between items-center mb-8">
+<h4 class="text-lg font-bold">Children by Category</h4>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_horiz</span>
+</div>
+<div class="flex flex-col md:flex-row items-center gap-10">
+<!-- Simulated Donut Chart -->
+<div class="relative w-40 h-40">
+<svg class="w-full h-full transform -rotate-90">
+<circle cx="80" cy="80" fill="transparent" r="70" stroke="#e2dfff" stroke-width="20"></circle>
+<circle cx="80" cy="80" fill="transparent" r="70" stroke="#3525cd" stroke-dasharray="220 440" stroke-width="20"></circle>
+<circle cx="80" cy="80" fill="transparent" r="70" stroke="#505f76" stroke-dasharray="100 440" stroke-dashoffset="-220" stroke-width="20"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold">5</span>
+<span class="text-[10px] text-on-surface-variant font-medium">TOTAL</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex-1 space-y-4 w-full">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-sm font-medium text-on-surface-variant">Single Orphan</span>
+</div>
+<span class="font-bold">3</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="text-sm font-medium text-on-surface-variant">Double Orphan</span>
+</div>
+<span class="font-bold">1</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary-fixed"></span>
+<span class="text-sm font-medium text-on-surface-variant">Vulnerable</span>
+</div>
+<span class="font-bold">1</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Donut Chart Right -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm">
+<div class="flex justify-between items-center mb-8">
+<h4 class="text-lg font-bold">Children by Sponsor</h4>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer">more_horiz</span>
+</div>
+<div class="flex flex-col md:flex-row items-center gap-10">
+<!-- Simulated Donut Chart 2 -->
+<div class="relative w-40 h-40">
+<svg class="w-full h-full transform -rotate-90">
+<circle cx="80" cy="80" fill="transparent" r="70" stroke="#ffdbcc" stroke-width="20"></circle>
+<circle cx="80" cy="80" fill="transparent" r="70" stroke="#3525cd" stroke-dasharray="300 440" stroke-width="20"></circle>
+<circle cx="80" cy="80" fill="transparent" r="70" stroke="#7e3000" stroke-dasharray="60 440" stroke-dashoffset="-300" stroke-width="20"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-2xl font-bold">5</span>
+<span class="text-[10px] text-on-surface-variant font-medium">TOTAL</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex-1 space-y-4 w-full">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-sm font-medium text-on-surface-variant">Government</span>
+</div>
+<span class="font-bold">4</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-tertiary"></span>
+<span class="text-sm font-medium text-on-surface-variant">NGOs</span>
+</div>
+<span class="font-bold">1</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-tertiary-fixed"></span>
+<span class="text-sm font-medium text-on-surface-variant">Private Donor</span>
+</div>
+<span class="font-bold">0</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Actions -->
+<section class="space-y-6">
+<h4 class="text-lg font-bold">System Actions</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Tile 1 -->
+<button class="flex items-center gap-6 p-8 bg-surface-container-lowest rounded-xl group hover:bg-primary-fixed/30 transition-all duration-300 text-left">
+<div class="w-16 h-16 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl" data-weight="fill">group_add</span>
+</div>
+<div>
+<span class="text-xl font-bold block">Manage Children</span>
+<p class="text-on-surface-variant text-sm mt-1">Update profiles, attendance records, and support status.</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-primary opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</button>
+<!-- Tile 2 -->
+<button class="flex items-center gap-6 p-8 bg-surface-container-lowest rounded-xl group hover:bg-secondary-container/30 transition-all duration-300 text-left">
+<div class="w-16 h-16 rounded-xl bg-secondary-container/20 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl" data-weight="fill">description</span>
+</div>
+<div>
+<span class="text-xl font-bold block">Term Reports</span>
+<p class="text-on-surface-variant text-sm mt-1">Generate automated summary reports for donor compliance.</p>
+</div>
+<span class="material-symbols-outlined ml-auto text-secondary opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+</button>
+</div>
+</section>
+</div>
+<!-- Sticky Footer Branding -->
+<footer class="p-8 text-center">
+<p class="text-xs font-medium text-on-surface-variant/50">Helen Kaunda Secondary School © 2024 • Powered by Indigo Prism System</p>
+</footer>
+</main>
+</body></html>
