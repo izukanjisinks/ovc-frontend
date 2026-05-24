@@ -14,8 +14,8 @@ const store = useDashboardStore()
 const authStore = useAuthStore()
 
 const GREEN_PALETTE = [
-  '#166534', '#15803d', '#16a34a', '#22c55e',
-  '#4ade80', '#86efac', '#bbf7d0', '#dcfce7',
+  '#3525cd', '#4f46e5', '#6366f1', '#818cf8',
+  '#a5b4fc', '#c7d2fe', '#e0e7ff', '#eef2ff',
 ]
 
 onMounted(() => store.fetchStats())
@@ -89,8 +89,8 @@ const sponsorColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PAL
                 <p class="text-4xl font-bold mt-1">{{ store.stats.by_category.length }}</p>
                 <p class="text-xs text-muted-foreground mt-2">Diversity in support needs</p>
               </div>
-              <div class="size-11 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                <BookOpen class="size-5 text-emerald-700" />
+              <div class="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <BookOpen class="size-5 text-primary" />
               </div>
             </div>
           </CardContent>
@@ -104,8 +104,8 @@ const sponsorColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PAL
                 <p class="text-4xl font-bold mt-1">{{ store.stats.by_sponsor.length }}</p>
                 <p class="text-xs text-muted-foreground mt-2">Funding sources</p>
               </div>
-              <div class="size-11 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
-                <FileText class="size-5 text-orange-600" />
+              <div class="size-11 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <FileText class="size-5 text-primary" />
               </div>
             </div>
           </CardContent>
