@@ -2,11 +2,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { toast } from 'vue-sonner'
-import { ChevronLeft, ChevronRight, Check, Loader2 } from 'lucide-vue-next'
+import { ChevronLeft, ChevronRight, Check, Loader2, Upload, X, UserCircle2 } from 'lucide-vue-next'
 import { useChildrenStore } from '@/stores/children'
-import { mockCategoriesApi } from '@/services/mock/categories'
-import { mockRequisitesApi } from '@/services/mock/requisites'
-import { mockSponsorsApi } from '@/services/mock/sponsors'
+import { lookupsApi } from '@/services/api/lookups'
+import { uploadChildImage, deleteChildImage } from '@/services/storage'
 import type { ChildCategory, ChildRequisite, ChildSponsor, ChildPayload } from '@/types/child'
 import DashboardHeader from '@/components/dashboard/DashboardHeader.vue'
 import { Button } from '@/components/ui/button'
@@ -32,6 +31,34 @@ const loadingChild = ref(false)
 const allCategories = ref<ChildCategory[]>([])
 const allRequisites = ref<Omit<ChildRequisite, 'checked' | 'quantity' | 'price_per_item'>[]>([])
 const allSponsors = ref<ChildSponsor[]>([])
+
+// Photo upload
+const photoFile = ref<File | null>(null)
+const photoPreview = ref<string | null>(null)
+const existingPhotoUrl = ref<string | null>(null)
+const photoInput = ref<HTMLInputElement | null>(null)
+
+function onPhotoSelected(e: Event) {
+  const file = (e.target as HTMLInputElement).files?.[0]
+  if (!file) return
+  if (!['image/jpeg', 'image/png', 'image/heic', 'image/webp'].includes(file.type)) {
+    toast.error('Only JPEG, PNG, WebP, or HEIC images are accepted.')
+    return
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    toast.error('Image must be under 5 MB.')
+    return
+  }
+  photoFile.value = file
+  photoPreview.value = URL.createObjectURL(file)
+}
+
+function removePhoto() {
+  photoFile.value = null
+  photoPreview.value = null
+  existingPhotoUrl.value = null
+  if (photoInput.value) photoInput.value.value = ''
+}
 
 // Step 1 — Child & Guardian Info
 const info = ref({
@@ -64,9 +91,9 @@ const STEPS = [
 
 onMounted(async () => {
   const [cats, reqs, sponsors] = await Promise.all([
-    mockCategoriesApi.list(),
-    mockRequisitesApi.list(),
-    mockSponsorsApi.list(),
+    lookupsApi.categories(),
+    lookupsApi.requisites(),
+    lookupsApi.sponsors(),
   ])
   allCategories.value = cats
   allSponsors.value = sponsors
@@ -89,6 +116,10 @@ onMounted(async () => {
         guardian_last_name: child.guardian_last_name,
         guardian_address: child.guardian_address,
         guardian_phone: child.guardian_phone,
+      }
+      if (child.image_url) {
+        existingPhotoUrl.value = child.image_url
+        photoPreview.value = child.image_url
       }
       selectedCategoryIds.value = child.categories.map(c => c.id)
       selectedSponsorIds.value = child.sponsors.map(s => s.id)
@@ -139,8 +170,29 @@ function decrementQty(req: ChildRequisite) {
 async function submit() {
   saving.value = true
   try {
+    // Determine the child ID: existing ID for edits, or generate a temp one for creates
+    // (the real ID is assigned by the backend, but we need it for the storage path)
+    const childId = isEdit.value
+      ? (route.params.id as string)
+      : crypto.randomUUID()
+
+    // Upload new photo if selected
+    let imageUrl: string | undefined = existingPhotoUrl.value ?? undefined
+    if (photoFile.value) {
+      // Delete old photo from Firebase if replacing
+      if (existingPhotoUrl.value) {
+        await deleteChildImage(existingPhotoUrl.value)
+      }
+      imageUrl = await uploadChildImage(childId, photoFile.value)
+    } else if (!photoPreview.value && existingPhotoUrl.value) {
+      // Photo was removed without replacement
+      await deleteChildImage(existingPhotoUrl.value)
+      imageUrl = undefined
+    }
+
     const payload: ChildPayload = {
       ...info.value,
+      image_url: imageUrl,
       category_ids: selectedCategoryIds.value,
       sponsor_ids: selectedSponsorIds.value,
       requisites: requisites.value.map(r => ({
@@ -213,6 +265,41 @@ async function submit() {
           <CardDescription>Enter the child's personal and guardian details.</CardDescription>
         </CardHeader>
         <CardContent class="flex flex-col gap-5">
+          <!-- Photo upload -->
+          <div class="flex flex-col gap-2">
+            <Label>Photo <span class="text-muted-foreground text-xs font-normal">(optional)</span></Label>
+            <div class="flex items-center gap-4">
+              <div class="size-20 rounded-full overflow-hidden border bg-muted flex items-center justify-center shrink-0">
+                <img v-if="photoPreview" :src="photoPreview" alt="Child photo" class="w-full h-full object-cover" />
+                <UserCircle2 v-else class="size-10 text-muted-foreground" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                  <Button type="button" variant="outline" size="sm" @click="photoInput?.click()">
+                    <Upload class="size-3.5 mr-1.5" />
+                    {{ photoPreview ? 'Change Photo' : 'Upload Photo' }}
+                  </Button>
+                  <Button v-if="photoPreview" type="button" variant="ghost" size="sm" class="text-destructive hover:text-destructive" @click="removePhoto">
+                    <X class="size-3.5 mr-1" />
+                    Remove
+                  </Button>
+                </div>
+                <p class="text-xs text-muted-foreground">JPEG, PNG, WebP or HEIC — max 5 MB</p>
+              </div>
+              <input
+                ref="photoInput"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/heic"
+                class="hidden"
+                @change="onPhotoSelected"
+              />
+            </div>
+          </div>
+
+          <div class="border-t pt-4">
+            <p class="text-sm font-medium mb-4">Child Information</p>
+          </div>
+
           <div class="grid grid-cols-2 gap-4">
             <div class="flex flex-col gap-2">
               <Label>First Name <span class="text-destructive">*</span></Label>

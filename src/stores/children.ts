@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { mockChildrenApi } from '@/services/mock/children'
-import type { Child, ChildWithRelations, ChildPayload } from '@/types/child'
+import { childrenApi } from '@/services/api/children'
+import type { ChildWithRelations, ChildPayload } from '@/types/child'
 
 export const useChildrenStore = defineStore('children', () => {
   const children = ref<ChildWithRelations[]>([])
@@ -13,7 +13,7 @@ export const useChildrenStore = defineStore('children', () => {
     loading.value = true
     error.value = null
     try {
-      children.value = await mockChildrenApi.list(search)
+      children.value = await childrenApi.list(search ? { search } : undefined)
     } catch (err: any) {
       error.value = err?.error?.message ?? 'Failed to load children.'
     } finally {
@@ -25,7 +25,7 @@ export const useChildrenStore = defineStore('children', () => {
     loading.value = true
     error.value = null
     try {
-      selected.value = await mockChildrenApi.get(id)
+      selected.value = await childrenApi.get(id)
     } catch (err: any) {
       error.value = err?.error?.message ?? 'Failed to load child record.'
     } finally {
@@ -34,13 +34,13 @@ export const useChildrenStore = defineStore('children', () => {
   }
 
   async function createChild(payload: ChildPayload): Promise<ChildWithRelations> {
-    const child = await mockChildrenApi.create(payload)
+    const child = await childrenApi.create(payload)
     children.value.unshift(child)
     return child
   }
 
-  async function updateChild(id: string, payload: Partial<ChildPayload>): Promise<ChildWithRelations> {
-    const updated = await mockChildrenApi.update(id, payload)
+  async function updateChild(id: string, payload: ChildPayload): Promise<ChildWithRelations> {
+    const updated = await childrenApi.update(id, payload)
     const idx = children.value.findIndex(c => c.id === id)
     if (idx !== -1) children.value[idx] = updated
     if (selected.value?.id === id) selected.value = updated
@@ -48,7 +48,7 @@ export const useChildrenStore = defineStore('children', () => {
   }
 
   async function deleteChild(id: string): Promise<void> {
-    await mockChildrenApi.delete(id)
+    await childrenApi.delete(id)
     children.value = children.value.filter(c => c.id !== id)
     if (selected.value?.id === id) selected.value = null
   }

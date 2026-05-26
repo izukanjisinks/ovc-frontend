@@ -16,12 +16,12 @@ export interface Child {
 }
 
 export interface ChildCategory {
-  id: number
+  id: string
   name: string
 }
 
 export interface ChildRequisite {
-  id: number
+  id: string
   name: string
   checked: boolean
   quantity: number
@@ -29,7 +29,7 @@ export interface ChildRequisite {
 }
 
 export interface ChildSponsor {
-  id: number
+  id: string
   name: string
 }
 
@@ -50,7 +50,7 @@ export interface ChildPayload {
   guardian_last_name: string
   guardian_address: string
   guardian_phone: string
-  category_ids: number[]
-  requisites: { id: number; checked: boolean; quantity: number; price_per_item: number }[]
-  sponsor_ids: number[]
+  category_ids: string[]
+  requisites: { id: string; checked: boolean; quantity: number; price_per_item: number }[]
+  sponsor_ids: string[]
 }

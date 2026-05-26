@@ -3,26 +3,20 @@ export interface LoginCredentials {
   password: string
 }
 
-export interface AuthRole {
-  role_id: string
-  name: string
-}
-
 export interface AuthUser {
-  user_id: string
+  id: string
   email: string
-  role: AuthRole
-  full_name?: string
+  full_name: string
+  role: string
+  role_id: string
   created_at: string
-  change_password: boolean
-  is_active: boolean
+  updated_at: string
 }
 
 export type UserRole = 'admin' | 'user' | 'inspector'
 
 export interface LoginResponse {
   token: string
-  expires_at: string
   user: AuthUser
 }
 

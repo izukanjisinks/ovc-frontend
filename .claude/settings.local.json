@@ -12,7 +12,12 @@
       "Bash(ls -la \"C:\\\\development\\\\New folder \\(3\\)\\\\src\\\\views\\\\admin\"\" 2>/dev/null || echo \"Directory does not exist or cannot be read \")",
       "Bash(python -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(i['name'], '-', i.get\\('request',{}\\).get\\('method',''\\), i.get\\('request',{}\\).get\\('url',{}\\).get\\('raw',''\\)\\) for item in data['item'] for i in item.get\\('item',[]\\)]\")",
       "Bash(python -c 'import json,sys; data=json.load\\(sys.stdin\\);:*)",
-      "Bash(python -c ':*)"
+      "Bash(python -c ':*)",
+      "Read(//c/development/Lodge-Management-System-Backoffice/**)",
+      "Bash(findstr firebase *)",
+      "Read(//c/development/ovc/**)",
+      "Bash(find /mnt/c/development/ovc -type f -name \"*.go\" 2>/dev/null | head -30)",
+      "Read(//mnt/c/development/**)"
     ]
   }
 }

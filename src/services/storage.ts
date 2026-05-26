@@ -29,3 +29,19 @@ export async function deleteRoomImage(url: string): Promise<void> {
 export async function deleteAllRoomImages(urls: string[]): Promise<void> {
   await Promise.all(urls.map(u => deleteRoomImage(u)))
 }
+
+export async function uploadChildImage(childId: string, file: File): Promise<string> {
+  const ext = file.name.split('.').pop()
+  const filename = `${randomUUID()}.${ext}`
+  const ref = storageRef(storage, `children/${childId}/${filename}`)
+  await uploadBytes(ref, file)
+  return getDownloadURL(ref)
+}
+
+export async function deleteChildImage(url: string): Promise<void> {
+  const match = url.match(/\/o\/(.+?)\?/)
+  if (!match) return
+  const path = decodeURIComponent(match[1]!)
+  const ref = storageRef(storage, path)
+  await deleteObject(ref)
+}

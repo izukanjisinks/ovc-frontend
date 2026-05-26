@@ -9,8 +9,4 @@ export const authApi = {
   me(): Promise<AuthUser> {
     return apiClient.get<AuthUser>('/auth/me')
   },
-
-  logout(): Promise<void> {
-    return apiClient.post<void>('/auth/logout')
-  },
 }

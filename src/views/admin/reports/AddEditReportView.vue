@@ -116,7 +116,7 @@ async function submit() {
       await store.createReport(
         payload,
         authStore.user?.full_name ?? authStore.user?.email ?? 'Unknown',
-        authStore.user?.user_id ?? '0',
+        authStore.user?.id ?? '0',
       )
       toast.success('Report created.')
     }

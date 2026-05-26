@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { mockAuthApi as authApi } from '@/services/mock/auth'
-import type { AuthUser, AuthRole, LoginCredentials, ApiError, UserRole } from '@/types/auth'
+import { authApi } from '@/services/api/auth'
+import type { AuthUser, LoginCredentials, ApiError, UserRole } from '@/types/auth'
 
-function extractRole(role: AuthRole | undefined): UserRole | null {
+function extractRole(role: string | undefined): UserRole | null {
   if (!role) return null
-  return role.name as UserRole
+  return role as UserRole
 }
 
 const TOKEN_KEY = 'ovc_token'
@@ -69,14 +69,8 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function logout() {
-    try {
-      await authApi.logout()
-    } catch {
-      // Proceed with local logout even if API call fails
-    } finally {
-      clearAuth()
-    }
+  function logout() {
+    clearAuth()
   }
 
   return {
