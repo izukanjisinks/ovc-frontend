@@ -5,7 +5,6 @@ import { toast } from 'vue-sonner'
 import { Loader2, ChevronLeft, Search } from 'lucide-vue-next'
 import { useReportsStore } from '@/stores/reports'
 import { useChildrenStore } from '@/stores/children'
-import { useAuthStore } from '@/stores/auth'
 import type { ReportTerm } from '@/types/report'
 import DashboardHeader from '@/components/dashboard/DashboardHeader.vue'
 import { Button } from '@/components/ui/button'
@@ -23,7 +22,6 @@ const router = useRouter()
 const route = useRoute()
 const store = useReportsStore()
 const childrenStore = useChildrenStore()
-const authStore = useAuthStore()
 
 const isEdit = computed(() => !!route.params.id)
 const pageTitle = computed(() => isEdit.value ? 'Edit Report' : 'New Report')
@@ -92,7 +90,7 @@ onMounted(async () => {
         term: report.term,
         year: report.year,
       }
-      selectedChildIds.value = report.beneficiaries.map(b => b.id)
+      selectedChildIds.value = []
     }
     loading.value = false
   }
@@ -107,17 +105,12 @@ async function submit() {
       body: form.value.body.trim(),
       term: form.value.term,
       year: form.value.year,
-      child_ids: selectedChildIds.value,
     }
     if (isEdit.value) {
       await store.updateReport(route.params.id as string, payload)
       toast.success('Report updated.')
     } else {
-      await store.createReport(
-        payload,
-        authStore.user?.full_name ?? authStore.user?.email ?? 'Unknown',
-        authStore.user?.id ?? '0',
-      )
+      await store.createReport(payload)
       toast.success('Report created.')
     }
     router.push({ name: 'reports' })

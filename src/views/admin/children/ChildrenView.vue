@@ -135,7 +135,7 @@ async function confirmDelete(child: ChildWithRelations) {
 
               <!-- Categories -->
               <TableCell>
-                <div v-if="child.categories.length" class="flex flex-wrap gap-1">
+                <div v-if="child.categories?.length" class="flex flex-wrap gap-1">
                   <Badge
                     v-for="cat in child.categories.slice(0, 2)"
                     :key="cat.id"
@@ -151,7 +151,7 @@ async function confirmDelete(child: ChildWithRelations) {
 
               <!-- Sponsors -->
               <TableCell>
-                <div v-if="child.sponsors.length" class="flex flex-wrap gap-1">
+                <div v-if="child.sponsors?.length" class="flex flex-wrap gap-1">
                   <Badge
                     v-for="sp in child.sponsors"
                     :key="sp.id"

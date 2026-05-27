@@ -13,7 +13,8 @@ export const useChildrenStore = defineStore('children', () => {
     loading.value = true
     error.value = null
     try {
-      children.value = await childrenApi.list(search ? { search } : undefined)
+      const res = await childrenApi.list(search ? { search } : undefined)
+      children.value = Array.isArray(res) ? res : []
     } catch (err: any) {
       error.value = err?.error?.message ?? 'Failed to load children.'
     } finally {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { mockReportsApi } from '@/services/mock/reports'
+import { reportsApi } from '@/services/api/reports'
 import type { Report, ReportPayload, ReportFilters } from '@/types/report'
 
 export const useReportsStore = defineStore('reports', () => {
@@ -13,7 +13,8 @@ export const useReportsStore = defineStore('reports', () => {
     loading.value = true
     error.value = null
     try {
-      reports.value = await mockReportsApi.list(filters)
+      const res = await reportsApi.list(filters)
+      reports.value = Array.isArray(res) ? res : []
     } catch (err: any) {
       error.value = err?.error?.message ?? 'Failed to load reports.'
     } finally {
@@ -25,7 +26,7 @@ export const useReportsStore = defineStore('reports', () => {
     loading.value = true
     error.value = null
     try {
-      selected.value = await mockReportsApi.get(id)
+      selected.value = await reportsApi.get(id)
     } catch (err: any) {
       error.value = err?.error?.message ?? 'Failed to load report.'
     } finally {
@@ -33,14 +34,14 @@ export const useReportsStore = defineStore('reports', () => {
     }
   }
 
-  async function createReport(payload: ReportPayload, authorName: string, authorId: string): Promise<Report> {
-    const report = await mockReportsApi.create(payload, authorName, authorId)
+  async function createReport(payload: ReportPayload): Promise<Report> {
+    const report = await reportsApi.create(payload)
     reports.value.unshift(report)
     return report
   }
 
-  async function updateReport(id: string, payload: Partial<ReportPayload>): Promise<Report> {
-    const updated = await mockReportsApi.update(id, payload)
+  async function updateReport(id: string, payload: ReportPayload): Promise<Report> {
+    const updated = await reportsApi.update(id, payload)
     const idx = reports.value.findIndex(r => r.id === id)
     if (idx !== -1) reports.value[idx] = updated
     if (selected.value?.id === id) selected.value = updated
@@ -48,7 +49,7 @@ export const useReportsStore = defineStore('reports', () => {
   }
 
   async function deleteReport(id: string): Promise<void> {
-    await mockReportsApi.delete(id)
+    await reportsApi.delete(id)
     reports.value = reports.value.filter(r => r.id !== id)
     if (selected.value?.id === id) selected.value = null
   }

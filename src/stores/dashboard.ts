@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { mockDashboardApi as dashboardApi } from '@/services/mock/dashboard'
+import { dashboardApi } from '@/services/api/dashboard'
 import type { DashboardStats, Highlight } from '@/types/dashboard'
 
 export const useDashboardStore = defineStore('dashboard', () => {
@@ -22,11 +22,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
   }
 
   async function fetchHighlights() {
-    try {
-      highlights.value = await dashboardApi.highlights()
-    } catch {
-      // non-critical
-    }
+    highlights.value = []
   }
 
   return { stats, highlights, loading, error, fetchStats, fetchHighlights }

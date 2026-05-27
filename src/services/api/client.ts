@@ -1,5 +1,7 @@
 import type { ApiError } from '@/types/auth'
 import { useForbiddenHandler } from '@/composables/useForbiddenHandler'
+import { useAuthStore } from '@/stores/auth'
+import router from '@/router'
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:8081/api/v1'
 
@@ -70,7 +72,8 @@ async function request<T>(
     return undefined as T
   }
 
-  return response.json() as Promise<T>
+  const json = await response.json()
+  return (json && typeof json === 'object' && 'data' in json ? json.data : json) as T
 }
 
 export const apiClient = {

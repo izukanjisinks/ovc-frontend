@@ -7,12 +7,12 @@ export function usePagination<T>(source: ComputedRef<T[]> | Ref<T[]>, pageSize =
   // Reset to page 1 whenever the source list changes (e.g. after a search)
   watch(source, () => { page.value = 1 })
 
-  const total = computed(() => source.value.length)
+  const total = computed(() => (source.value ?? []).length)
   const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
 
   const paginated = computed(() => {
     const start = (page.value - 1) * pageSize
-    return source.value.slice(start, start + pageSize)
+    return (source.value ?? []).slice(start, start + pageSize)
   })
 
   function prev() { if (page.value > 1) page.value-- }

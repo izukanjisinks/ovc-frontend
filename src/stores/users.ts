@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { mockUsersApi as usersApi } from '@/services/mock/users'
+import { usersApi } from '@/services/api/users'
 import type { SystemUser, SystemUserPayload } from '@/types/user'
 
 export const useUsersStore = defineStore('users', () => {
@@ -14,8 +14,9 @@ export const useUsersStore = defineStore('users', () => {
     error.value = null
     try {
       const res = await usersApi.list({ page, page_size: pageSize })
-      users.value = res.data
-      total.value = res.total
+      const list = Array.isArray(res) ? res : (res as any).data ?? []
+      users.value = list
+      total.value = (res as any).total ?? list.length
     } catch (err: any) {
       error.value = err?.error?.message ?? 'Failed to load users.'
     } finally {
