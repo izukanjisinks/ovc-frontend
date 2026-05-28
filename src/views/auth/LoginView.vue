@@ -5,7 +5,8 @@ import { useAuthStore } from '@/stores/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Eye, EyeOff, Loader2, GraduationCap } from 'lucide-vue-next'
+import { Eye, EyeOff, Loader2 } from 'lucide-vue-next'
+import ovcLogo from '@/assets/logo/ovc_logo.png'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -34,7 +35,7 @@ async function handleSubmit() {
           <!-- Logo & Title -->
           <div class="flex flex-col items-center gap-4 text-center mb-8">
             <div class="flex items-center justify-center size-14 rounded-full bg-primary/10">
-              <GraduationCap class="size-8 text-primary" />
+              <img :src="ovcLogo" alt="OVC Logo" class="size-10 object-contain" />
             </div>
             <div>
               <h1 class="text-2xl font-bold tracking-tight text-foreground">
@@ -124,8 +125,8 @@ async function handleSubmit() {
     <!-- Right Side — Brand Panel -->
     <div class="relative hidden lg:flex flex-col items-center justify-center bg-primary px-12">
       <div class="max-w-md text-center">
-        <div class="flex items-center justify-center size-20 rounded-full bg-white/10 mx-auto mb-8">
-          <GraduationCap class="size-10 text-white" />
+        <div class="flex items-center justify-center size-20 rounded-full bg-white mx-auto mb-8">
+          <img :src="ovcLogo" alt="OVC Logo" class="size-12 object-contain" />
         </div>
         <h2 class="text-3xl font-bold text-white mb-4">
           Orphan & Vulnerable Children

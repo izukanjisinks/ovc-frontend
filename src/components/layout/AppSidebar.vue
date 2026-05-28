@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import ovcLogo from '@/assets/logo/ovc_logo.png'
 import {
   LayoutDashboard,
   Users,
@@ -81,9 +82,7 @@ async function handleLogout() {
         <SidebarMenuItem>
           <SidebarMenuButton size="lg" as-child>
             <RouterLink :to="{ name: 'home' }">
-              <div class="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">
-                OVC
-              </div>
+              <img :src="ovcLogo" alt="OVC Logo" class="size-8 rounded-lg object-contain" />
               <div class="flex flex-col gap-0.5 leading-none">
                 <span class="font-semibold">OVC-MIS</span>
                 <span class="text-xs text-muted-foreground">{{ authStore.roleLabel }}</span>
