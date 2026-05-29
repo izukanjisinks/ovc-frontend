@@ -32,15 +32,16 @@ const firstName = computed(() => {
   return name.split(' ')[0] ?? name
 })
 
-type ChartDatum = { name: string; count: number }
+type CategoryDatum = { category: string; count: number }
+type SponsorDatum  = { sponsor: string; count: number }
 
 // Bar chart (category)
-const barCount  = (d: ChartDatum) => d.count
-const barColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PALETTE.length]!
+const barCount  = (d: CategoryDatum) => d.count
+const barColor  = (_d: CategoryDatum, i: number) => GREEN_PALETTE[i % GREEN_PALETTE.length]!
 
 // Donut chart (sponsor)
-const sponsorValue  = (d: ChartDatum) => d.count
-const sponsorColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PALETTE.length]!
+const sponsorValue  = (d: SponsorDatum) => d.count
+const sponsorColor  = (_d: SponsorDatum, i: number) => GREEN_PALETTE[i % GREEN_PALETTE.length]!
 </script>
 
 <template>
@@ -128,7 +129,7 @@ const sponsorColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PAL
               :margin="{ left: 28, right: 8, top: 8, bottom: 24 }"
             >
               <VisGroupedBar
-                :x="(_d: ChartDatum, i: number) => i"
+                :x="(_d: CategoryDatum, i: number) => i"
                 :y="[barCount]"
                 :color="barColor"
                 :rounded-corners="3"
@@ -153,14 +154,14 @@ const sponsorColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PAL
             <div class="flex flex-col gap-1 mt-3">
               <div
                 v-for="(item, i) in store.stats.by_category"
-                :key="item.name"
+                :key="item.category"
                 class="flex items-center gap-2 text-xs"
               >
                 <span
                   class="size-4 rounded flex items-center justify-center text-white font-bold shrink-0 text-[10px]"
                   :style="{ backgroundColor: GREEN_PALETTE[i % GREEN_PALETTE.length] }"
                 >{{ i + 1 }}</span>
-                <span class="text-muted-foreground">{{ item.name }}</span>
+                <span class="text-muted-foreground">{{ item.category }}</span>
                 <span class="font-medium ml-auto">{{ item.count }}</span>
               </div>
             </div>
@@ -187,14 +188,14 @@ const sponsorColor  = (_d: ChartDatum, i: number) => GREEN_PALETTE[i % GREEN_PAL
             <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 w-full">
               <div
                 v-for="(item, i) in store.stats.by_sponsor"
-                :key="item.name"
+                :key="item.sponsor"
                 class="flex items-center gap-1.5 text-sm"
               >
                 <span
                   class="size-2.5 rounded-full shrink-0"
                   :style="{ backgroundColor: GREEN_PALETTE[i % GREEN_PALETTE.length] }"
                 />
-                <span class="text-muted-foreground">{{ item.name }}</span>
+                <span class="text-muted-foreground">{{ item.sponsor }}</span>
                 <span class="font-medium">{{ item.count }}</span>
               </div>
             </div>

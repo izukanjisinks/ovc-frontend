@@ -1,7 +1,7 @@
 export interface DashboardStats {
   total_children: number
-  by_category: { name: string; count: number }[]
-  by_sponsor: { name: string; count: number }[]
+  by_category: { category: string; count: number }[]
+  by_sponsor: { sponsor: string; count: number }[]
 }
 
 export interface Highlight {
