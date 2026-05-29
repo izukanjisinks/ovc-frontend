@@ -158,7 +158,7 @@ async function confirmDelete(report: Report) {
           <template v-else-if="filtered.length === 0">
             <TableRow>
               <TableCell colspan="7" class="py-16 text-center text-muted-foreground">
-                {{ store.reports.length === 0 ? 'No reports yet.' : 'No reports match the current filter.' }}
+                {{ !store.reports?.length ? 'No reports yet.' : 'No reports match the current filter.' }}
               </TableCell>
             </TableRow>
           </template>
