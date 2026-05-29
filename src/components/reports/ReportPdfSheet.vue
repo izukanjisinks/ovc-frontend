@@ -23,7 +23,7 @@ watch(() => props.open, async (open) => {
   if (open) {
     pdfReady.value = false
     await nextTick()
-    setTimeout(() => { pdfReady.value = true }, 300)
+    setTimeout(() => { pdfReady.value = true }, 600)
   }
 })
 

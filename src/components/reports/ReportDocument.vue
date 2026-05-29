@@ -106,7 +106,7 @@ const s = {
       </View>
 
       <!-- Beneficiaries table -->
-      <View v-if="report.beneficiaries.length > 0">
+      <View v-if="report.beneficiaries?.length > 0">
         <Text :style="s.sectionTitle">Beneficiaries</Text>
         <Text :style="s.sectionMeta">
           Children who received OVC grant support — {{ TERM_LABELS[report.term] }} {{ report.year }}
@@ -132,12 +132,12 @@ const s = {
           <View :style="s.colName">
             <Text :style="s.cellText">{{ b.first_name }} {{ b.last_name }}</Text>
             <Text :style="s.cellMuted">
-              {{ b.categories.slice(0, 2).map(c => shortName(c.name, 3)).join(', ') }}{{ b.categories.length > 2 ? '...' : '' }}
+              {{ (b.categories ?? []).slice(0, 2).map(c => shortName(c.name, 3)).join(', ') }}{{ (b.categories?.length ?? 0) > 2 ? '...' : '' }}
             </Text>
           </View>
           <Text :style="[s.cellText, s.colClass]">{{ b.class_name }}</Text>
           <Text :style="[s.cellText, s.colSponsor]">
-            {{ b.sponsors.map(s => shortName(s.name, 2)).join(', ') || '—' }}
+            {{ (b.sponsors ?? []).map(s => shortName(s.name, 2)).join(', ') || '—' }}
           </Text>
         </View>
 
@@ -146,7 +146,7 @@ const s = {
           <Text :style="[s.totalText, s.colNo]"></Text>
           <Text :style="[s.totalText, s.colId]"></Text>
           <Text :style="[s.totalText, s.colName]">Total Beneficiaries</Text>
-          <Text :style="[s.totalText, s.colClass]">{{ report.beneficiaries.length }}</Text>
+          <Text :style="[s.totalText, s.colClass]">{{ report.beneficiaries?.length ?? 0 }}</Text>
           <Text :style="[s.totalText, s.colSponsor]"></Text>
         </View>
       </View>
