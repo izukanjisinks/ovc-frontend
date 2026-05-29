@@ -27,7 +27,7 @@ export const childrenApi = {
     }).then(child => childrenApi._setRelations(child.id, payload)),
 
   update: (id: string, payload: ChildPayload): Promise<ChildWithRelations> =>
-    apiClient.put<Child>(`/children/${id}`, {
+    apiClient.put<void>(`/children/${id}`, {
       first_name:           payload.first_name,
       last_name:            payload.last_name,
       address:              payload.address,
@@ -37,7 +37,7 @@ export const childrenApi = {
       guardian_last_name:   payload.guardian_last_name,
       guardian_address:     payload.guardian_address,
       guardian_phone:       payload.guardian_phone,
-    }).then(child => childrenApi._setRelations(child.id, payload)),
+    }).then(() => childrenApi._setRelations(id, payload)),
 
   delete: (id: string) =>
     apiClient.delete<void>(`/children/${id}`),

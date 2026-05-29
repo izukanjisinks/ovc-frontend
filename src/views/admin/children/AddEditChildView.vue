@@ -77,10 +77,10 @@ const info = ref({
 const requisites = ref<ChildRequisite[]>([])
 
 // Step 3 — Categories
-const selectedCategoryIds = ref<number[]>([])
+const selectedCategoryIds = ref<string[]>([])
 
 // Step 4 — Sponsors
-const selectedSponsorIds = ref<number[]>([])
+const selectedSponsorIds = ref<string[]>([])
 
 const STEPS = [
   { label: 'Child Info', description: 'Personal & guardian details' },
@@ -121,10 +121,10 @@ onMounted(async () => {
         existingPhotoUrl.value = child.image_url
         photoPreview.value = child.image_url
       }
-      selectedCategoryIds.value = child.categories.map(c => c.id)
-      selectedSponsorIds.value = child.sponsors.map(s => s.id)
+      selectedCategoryIds.value = (child.categories ?? []).map(c => c.id)
+      selectedSponsorIds.value = (child.sponsors ?? []).map(s => s.id)
       requisites.value = reqs.map(r => {
-        const existing = child.requisites.find(cr => cr.id === r.id)
+        const existing = (child.requisites ?? []).find(cr => cr.id === r.id)
         return existing
           ? { ...r, checked: existing.checked, quantity: existing.quantity, price_per_item: existing.price_per_item }
           : { ...r, checked: false, quantity: 1, price_per_item: 0 }
@@ -147,13 +147,13 @@ const step1Valid = computed(() =>
   info.value.guardian_phone.trim(),
 )
 
-function toggleCategory(id: number) {
+function toggleCategory(id: string) {
   const idx = selectedCategoryIds.value.indexOf(id)
   if (idx === -1) selectedCategoryIds.value.push(id)
   else selectedCategoryIds.value.splice(idx, 1)
 }
 
-function toggleSponsor(id: number) {
+function toggleSponsor(id: string) {
   const idx = selectedSponsorIds.value.indexOf(id)
   if (idx === -1) selectedSponsorIds.value.push(id)
   else selectedSponsorIds.value.splice(idx, 1)

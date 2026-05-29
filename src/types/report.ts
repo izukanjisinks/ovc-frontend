@@ -1,3 +1,5 @@
+import type { ChildWithRelations } from './child'
+
 export type ReportTerm = 'TERM_1' | 'TERM_2' | 'TERM_3'
 
 export interface Report {
@@ -10,6 +12,7 @@ export interface Report {
   created_by_name?: string
   created_at: string
   updated_at: string
+  beneficiaries?: ChildWithRelations[]
 }
 
 export interface ReportPayload {
@@ -17,6 +20,7 @@ export interface ReportPayload {
   body: string
   term: ReportTerm
   year: number
+  child_ids: string[]
 }
 
 export interface ReportFilters {

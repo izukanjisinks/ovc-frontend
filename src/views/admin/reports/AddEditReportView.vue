@@ -90,7 +90,7 @@ onMounted(async () => {
         term: report.term,
         year: report.year,
       }
-      selectedChildIds.value = []
+      selectedChildIds.value = (report.beneficiaries ?? []).map(b => b.id)
     }
     loading.value = false
   }
@@ -105,6 +105,7 @@ async function submit() {
       body: form.value.body.trim(),
       term: form.value.term,
       year: form.value.year,
+      child_ids: selectedChildIds.value,
     }
     if (isEdit.value) {
       await store.updateReport(route.params.id as string, payload)
@@ -250,17 +251,17 @@ async function submit() {
                 <div class="flex items-center gap-2 mt-0.5 flex-wrap">
                   <Badge variant="outline" class="text-xs">Class {{ child.class_name }}</Badge>
                   <span
-                    v-for="cat in child.categories.slice(0, 2)"
+                    v-for="cat in (child.categories ?? []).slice(0, 2)"
                     :key="cat.id"
                     class="text-xs text-muted-foreground"
                   >{{ cat.name.split(' ').slice(0, 3).join(' ') }}</span>
-                  <span v-if="child.categories.length > 2" class="text-xs text-muted-foreground">
-                    +{{ child.categories.length - 2 }} more
+                  <span v-if="(child.categories ?? []).length > 2" class="text-xs text-muted-foreground">
+                    +{{ (child.categories ?? []).length - 2 }} more
                   </span>
                 </div>
               </div>
               <div class="text-xs text-muted-foreground shrink-0">
-                {{ child.sponsors.map(s => s.name.split(' ').slice(0, 2).join(' ')).join(', ') }}
+                {{ (child.sponsors ?? []).map(s => s.name.split(' ').slice(0, 2).join(' ')).join(', ') }}
               </div>
             </div>
           </div>
