@@ -50,7 +50,7 @@ const TERM_LABELS: Record<ReportTerm, string> = {
 onMounted(() => store.fetchReports())
 
 const filtered = computed(() => {
-  let list = store.reports
+  let list = store.reports ?? []
   if (appliedTerm.value) list = list.filter(r => r.term === appliedTerm.value)
   if (appliedYear.value) list = list.filter(r => r.year === appliedYear.value)
   return list
