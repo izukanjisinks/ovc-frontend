@@ -401,7 +401,7 @@ async function submit() {
 
                 <!-- Price per item -->
                 <div class="flex items-center gap-2" @click.stop>
-                  <span class="text-xs text-muted-foreground">ZMW</span>
+                  <span class="text-xs text-muted-foreground">Price</span>
                   <Input
                     v-model.number="req.price_per_item"
                     type="number"
@@ -410,6 +410,12 @@ async function submit() {
                     placeholder="0.00"
                     @click.stop
                   />
+                </div>
+
+                <!-- Total -->
+                <div class="flex flex-col items-end shrink-0 w-20" @click.stop>
+                  <span class="text-xs text-muted-foreground">Total</span>
+                  <span class="text-sm font-semibold">{{ (req.quantity * req.price_per_item).toFixed(2) }}</span>
                 </div>
               </template>
             </div>
