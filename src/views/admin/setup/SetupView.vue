@@ -85,31 +85,34 @@ async function save() {
   if (!formName.value.trim()) return
   dialogSaving.value = true
   try {
+    const name = formName.value.trim()
+    const price = formPrice.value
+
     if (tab.value === 'categories') {
       if (editingId.value) {
-        const updated = await lookupsApi.updateCategory(editingId.value, formName.value.trim())
+        await lookupsApi.updateCategory(editingId.value, name)
         const idx = categories.value.findIndex(c => c.id === editingId.value)
-        if (idx !== -1) categories.value[idx] = updated
+        if (idx !== -1) categories.value[idx] = { ...categories.value[idx]!, name }
       } else {
-        const created = await lookupsApi.createCategory(formName.value.trim())
+        const created = await lookupsApi.createCategory(name)
         categories.value.push(created)
       }
     } else if (tab.value === 'requisites') {
       if (editingId.value) {
-        const updated = await lookupsApi.updateRequisite(editingId.value, formName.value.trim(), formPrice.value)
+        await lookupsApi.updateRequisite(editingId.value, name, price)
         const idx = requisites.value.findIndex(r => r.id === editingId.value)
-        if (idx !== -1) requisites.value[idx] = updated
+        if (idx !== -1) requisites.value[idx] = { ...requisites.value[idx]!, name, default_price: price }
       } else {
-        const created = await lookupsApi.createRequisite(formName.value.trim(), formPrice.value)
+        const created = await lookupsApi.createRequisite(name, price)
         requisites.value.push(created)
       }
     } else {
       if (editingId.value) {
-        const updated = await lookupsApi.updateSponsor(editingId.value, formName.value.trim())
+        await lookupsApi.updateSponsor(editingId.value, name)
         const idx = sponsors.value.findIndex(s => s.id === editingId.value)
-        if (idx !== -1) sponsors.value[idx] = updated
+        if (idx !== -1) sponsors.value[idx] = { ...sponsors.value[idx]!, name }
       } else {
-        const created = await lookupsApi.createSponsor(formName.value.trim())
+        const created = await lookupsApi.createSponsor(name)
         sponsors.value.push(created)
       }
     }
