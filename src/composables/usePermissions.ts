@@ -12,6 +12,7 @@ const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
   'reports-new':    ['admin', 'user'],
   'reports-edit':   ['admin', 'user'],
   users:            ['admin'],
+  setup:            ['admin'],
   about:            ['admin', 'user', 'inspector'],
 }
 

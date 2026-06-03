@@ -108,6 +108,7 @@ async function handleSave() {
       status: form.value.status,
       ...(form.value.password ? { password: form.value.password } : {}),
     }
+    console.log('[UserDialog] submitting payload:', JSON.stringify(payload, null, 2))
     let saved: SystemUser
     if (isEdit.value && props.user) {
       saved = await store.updateUser(props.user.id, payload)
@@ -118,6 +119,7 @@ async function handleSave() {
     emit('saved', saved)
     emit('update:open', false)
   } catch (err: any) {
+    console.error('[UserDialog] save failed:', JSON.stringify(err, null, 2))
     error.value = err?.error?.message ?? 'Failed to save user.'
     toast.error(error.value)
   } finally {
@@ -161,7 +163,6 @@ async function handleSave() {
               <SelectContent>
                 <SelectItem value="admin">Admin</SelectItem>
                 <SelectItem value="user">Guidance Staff</SelectItem>
-                <SelectItem value="inspector">Inspector</SelectItem>
               </SelectContent>
             </Select>
           </div>

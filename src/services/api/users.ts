@@ -21,11 +21,16 @@ export const usersApi = {
       email: payload.email,
       password: payload.password,
       role: payload.role,
-      status: payload.status,
+      is_active: payload.status === 'active',
     }),
 
-  update: (id: string, payload: Partial<SystemUserPayload>) =>
-    apiClient.put<SystemUser>(`/users/${id}`, payload),
+  update: (id: string, payload: Partial<SystemUserPayload>) => {
+    const { status, ...rest } = payload
+    return apiClient.put<SystemUser>(`/users/${id}`, {
+      ...rest,
+      ...(status !== undefined ? { is_active: status === 'active' } : {}),
+    })
+  },
 
   delete: (id: string) =>
     apiClient.delete<void>(`/users/${id}`),

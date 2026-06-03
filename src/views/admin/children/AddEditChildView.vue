@@ -99,7 +99,7 @@ onMounted(async () => {
   allSponsors.value = sponsors
 
   // Initialise requisites with defaults
-  requisites.value = reqs.map(r => ({ ...r, checked: false, quantity: 1, price_per_item: 0 }))
+  requisites.value = reqs.map(r => ({ ...r, checked: false, quantity: 1, price_per_item: r.default_price ?? 0 }))
 
   if (isEdit.value) {
     loadingChild.value = true

@@ -9,6 +9,7 @@ import {
   LogOut,
   ChevronUp,
   User2,
+  Settings2,
 } from 'lucide-vue-next'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -62,7 +63,10 @@ const navGroups = computed(() => [
     label: 'System',
     items: [
       ...(authStore.userRole === 'admin'
-        ? [{ title: 'System Users', icon: User2, routeName: 'users' }]
+        ? [
+            { title: 'System Users', icon: User2, routeName: 'users' },
+            { title: 'Setup', icon: Settings2, routeName: 'setup' },
+          ]
         : []),
       { title: 'About', icon: Info, routeName: 'about' },
     ],
