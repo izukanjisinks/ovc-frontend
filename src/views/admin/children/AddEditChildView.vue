@@ -364,27 +364,25 @@ async function submit() {
             <div
               v-for="req in requisites"
               :key="req.id"
-              class="flex items-center gap-4 py-3"
+              class="flex items-center gap-4 py-3 cursor-pointer"
+              @click="req.checked = !req.checked"
             >
               <Checkbox
-                :id="`req-${req.id}`"
                 :checked="req.checked"
-                @update:checked="req.checked = $event"
+                @update:checked="req.checked = !req.checked"
               />
-              <Label :for="`req-${req.id}`" class="flex-1 cursor-pointer text-sm font-medium">
-                {{ req.name }}
-              </Label>
+              <span class="flex-1 text-sm font-medium select-none">{{ req.name }}</span>
 
               <template v-if="req.checked">
                 <!-- Quantity -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2" @click.stop>
                   <span class="text-xs text-muted-foreground w-4">Qty</span>
                   <div class="flex items-center border rounded-md">
                     <button
                       type="button"
                       class="px-2 py-1 hover:bg-muted disabled:opacity-40"
                       :disabled="req.quantity <= 1"
-                      @click="decrementQty(req)"
+                      @click.stop="decrementQty(req)"
                     >
                       <Minus class="size-3" />
                     </button>
@@ -392,7 +390,7 @@ async function submit() {
                     <button
                       type="button"
                       class="px-2 py-1 hover:bg-muted"
-                      @click="incrementQty(req)"
+                      @click.stop="incrementQty(req)"
                     >
                       <Plus class="size-3" />
                     </button>
@@ -400,7 +398,7 @@ async function submit() {
                 </div>
 
                 <!-- Price per item -->
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2" @click.stop>
                   <span class="text-xs text-muted-foreground">ZMW</span>
                   <Input
                     v-model.number="req.price_per_item"
@@ -408,6 +406,7 @@ async function submit() {
                     min="0"
                     class="w-24 h-8 text-sm"
                     placeholder="0.00"
+                    @click.stop
                   />
                 </div>
               </template>
