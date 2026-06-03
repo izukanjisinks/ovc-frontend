@@ -13,7 +13,7 @@ export const childrenApi = {
     apiClient.get<ChildWithRelations>(`/children/${id}`),
 
   create: (payload: ChildPayload): Promise<ChildWithRelations> =>
-    apiClient.post<Child>('/children', {
+    apiClient.post<ChildWithRelations>('/children', {
       pupil_id:             payload.pupil_id,
       first_name:           payload.first_name,
       last_name:            payload.last_name,
@@ -24,10 +24,18 @@ export const childrenApi = {
       guardian_last_name:   payload.guardian_last_name,
       guardian_address:     payload.guardian_address,
       guardian_phone:       payload.guardian_phone,
-    }).then(child => childrenApi._setRelations(child.id, payload)),
+      category_ids:         payload.category_ids,
+      sponsor_ids:          payload.sponsor_ids,
+      requisites:           payload.requisites.map(r => ({
+        requisite_id:   r.id,
+        quantity:       r.quantity,
+        checked:        r.checked,
+        price_per_item: r.price_per_item,
+      })),
+    }),
 
-  update: (id: string, payload: ChildPayload): Promise<ChildWithRelations> =>
-    apiClient.put<void>(`/children/${id}`, {
+  update: async (id: string, payload: ChildPayload): Promise<ChildWithRelations> => {
+    await apiClient.put<void>(`/children/${id}`, {
       first_name:           payload.first_name,
       last_name:            payload.last_name,
       address:              payload.address,
@@ -37,29 +45,18 @@ export const childrenApi = {
       guardian_last_name:   payload.guardian_last_name,
       guardian_address:     payload.guardian_address,
       guardian_phone:       payload.guardian_phone,
-    }).then(() => childrenApi._setRelations(id, payload)),
+      category_ids:         payload.category_ids,
+      sponsor_ids:          payload.sponsor_ids,
+      requisites:           payload.requisites.map(r => ({
+        requisite_id:   r.id,
+        quantity:       r.quantity,
+        checked:        r.checked,
+        price_per_item: r.price_per_item,
+      })),
+    })
+    return childrenApi.get(id)
+  },
 
   delete: (id: string) =>
     apiClient.delete<void>(`/children/${id}`),
-
-  // Sets all three relationship types then fetches the full record
-  async _setRelations(id: string, payload: ChildPayload): Promise<ChildWithRelations> {
-    await Promise.all([
-      apiClient.put<void>(`/children/${id}/categories`, {
-        category_ids: payload.category_ids,
-      }),
-      apiClient.put<void>(`/children/${id}/requisites`, {
-        requisites: payload.requisites.map(r => ({
-          requisite_id:   r.id,
-          quantity:       r.quantity,
-          checked:        r.checked,
-          price_per_item: r.price_per_item,
-        })),
-      }),
-      apiClient.put<void>(`/children/${id}/sponsors`, {
-        sponsor_ids: payload.sponsor_ids,
-      }),
-    ])
-    return childrenApi.get(id)
-  },
 }

@@ -239,8 +239,8 @@ async function submit() {
             >
               <Checkbox
                 :id="`child-${child.id}`"
-                :checked="selectedChildIds.includes(child.id)"
-                @update:checked="toggleChild(child.id)"
+                :model-value="selectedChildIds.includes(child.id)"
+                @update:model-value="toggleChild(child.id)"
                 @click.stop
               />
               <div class="flex-1 min-w-0">

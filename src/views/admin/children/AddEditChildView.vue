@@ -364,14 +364,16 @@ async function submit() {
             <div
               v-for="req in requisites"
               :key="req.id"
-              class="flex items-center gap-4 py-3 cursor-pointer"
+              class="flex items-center gap-4 py-3 cursor-pointer hover:bg-muted/50 transition-colors rounded-lg"
+              :class="{ 'bg-primary/5': req.checked }"
               @click="req.checked = !req.checked"
             >
               <Checkbox
-                :checked="req.checked"
-                @update:checked="req.checked = !req.checked"
+                :model-value="req.checked"
+                @update:model-value="req.checked = !!$event"
+                @click.stop
               />
-              <span class="flex-1 text-sm font-medium select-none">{{ req.name }}</span>
+              <div class="flex-1 text-sm font-medium select-none">{{ req.name }}</div>
 
               <template v-if="req.checked">
                 <!-- Quantity -->
@@ -432,8 +434,8 @@ async function submit() {
             >
               <Checkbox
                 :id="`cat-${cat.id}`"
-                :checked="selectedCategoryIds.includes(cat.id)"
-                @update:checked="toggleCategory(cat.id)"
+                :model-value="selectedCategoryIds.includes(cat.id)"
+                @update:model-value="toggleCategory(cat.id)"
                 @click.stop
               />
               <Label :for="`cat-${cat.id}`" class="cursor-pointer text-sm leading-snug">
@@ -464,8 +466,8 @@ async function submit() {
             >
               <Checkbox
                 :id="`sp-${sponsor.id}`"
-                :checked="selectedSponsorIds.includes(sponsor.id)"
-                @update:checked="toggleSponsor(sponsor.id)"
+                :model-value="selectedSponsorIds.includes(sponsor.id)"
+                @update:model-value="toggleSponsor(sponsor.id)"
                 @click.stop
               />
               <Label :for="`sp-${sponsor.id}`" class="cursor-pointer text-sm font-medium">
