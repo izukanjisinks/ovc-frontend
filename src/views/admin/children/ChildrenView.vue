@@ -6,11 +6,15 @@ import { toast } from 'vue-sonner'
 import { useChildrenStore } from '@/stores/children'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { usePagination } from '@/composables/usePagination'
-import type { ChildWithRelations } from '@/types/child'
+import type { ChildWithRelations, ChildCategory } from '@/types/child'
+import { lookupsApi } from '@/services/api/lookups'
 import DashboardHeader from '@/components/dashboard/DashboardHeader.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from '@/components/ui/table'
@@ -20,17 +24,29 @@ const store = useChildrenStore()
 const confirmDialog = useConfirmDialog()
 
 const search = ref('')
+const categoryFilter = ref<string>('all')
+const categories = ref<ChildCategory[]>([])
 
-onMounted(() => store.fetchChildren())
+onMounted(async () => {
+  store.fetchChildren()
+  try {
+    categories.value = await lookupsApi.categories()
+  } catch {
+    // non-critical — filter just won't populate
+  }
+})
 
 const filtered = computed(() => {
   const q = search.value.toLowerCase().trim()
-  if (!q) return store.children
-  return store.children.filter(c =>
-    c.pupil_id.toLowerCase().includes(q) ||
-    c.first_name.toLowerCase().includes(q) ||
-    c.last_name.toLowerCase().includes(q),
-  )
+  return store.children.filter(c => {
+    if (q && !(
+      c.pupil_id.toLowerCase().includes(q) ||
+      c.first_name.toLowerCase().includes(q) ||
+      c.last_name.toLowerCase().includes(q)
+    )) return false
+    if (categoryFilter.value !== 'all' && !c.categories?.some(cat => cat.id === categoryFilter.value)) return false
+    return true
+  })
 })
 
 const { page, totalPages, paginated, prev, next, goTo, pageNumbers } = usePagination(filtered)
@@ -63,9 +79,22 @@ async function confirmDelete(child: ChildWithRelations) {
   <div class="flex flex-col gap-6 p-6">
     <!-- Toolbar -->
     <div class="flex items-center justify-between gap-4">
-      <div class="relative max-w-xs w-full">
-        <Search class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-        <Input v-model="search" placeholder="Search by name or pupil ID..." class="pl-9" />
+      <div class="flex items-center gap-3 flex-1">
+        <div class="relative max-w-xs w-full">
+          <Search class="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+          <Input v-model="search" placeholder="Search by name or pupil ID..." class="pl-9" />
+        </div>
+        <Select v-model="categoryFilter">
+          <SelectTrigger class="w-52">
+            <SelectValue placeholder="All categories" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All categories</SelectItem>
+            <SelectItem v-for="cat in categories" :key="cat.id" :value="cat.id">
+              {{ cat.name }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <Button @click="router.push({ name: 'children-new' })">
         <Plus class="size-4 mr-2" />
@@ -102,7 +131,7 @@ async function confirmDelete(child: ChildWithRelations) {
           <template v-else-if="filtered.length === 0">
             <TableRow>
               <TableCell colspan="8" class="py-16 text-center text-muted-foreground">
-                {{ store.children.length === 0 ? 'No children registered yet.' : 'No children match your search.' }}
+                {{ store.children.length === 0 ? 'No children registered yet.' : 'No children match your filters.' }}
               </TableCell>
             </TableRow>
           </template>
